@@ -9,7 +9,12 @@ table {
 }
 
 table td {
-    padding: 15px;
+    padding: 5px;
+}
+
+.table-container {
+    height: 400px;
+    overflow-y: auto;
 }
 
 table thead th {
@@ -18,6 +23,8 @@ table thead th {
     font-weight: bold;
     font-size: 13px;
     border: 1px solid #54585d;
+    position: sticky;
+    top: 0;
 }
 
 table tbody td {
@@ -63,8 +70,8 @@ input[type=number] {
     display: inline-block;
     border: 1px solid #ccc;
     border-radius: 4px;
-    box-sizing: border-box;
     font-size: 16px;
+    width: 30px;
 }
 
 .navbar {
@@ -72,7 +79,31 @@ input[type=number] {
     flex-direction: row;
     gap: 30px;
     align-items: center;
-    background-color: #b2b5b9;
+    background-color: #394555;
+}
+
+.navbar h1 {
+    color: #dadcdf;
+}
+
+.navbar>ul {
+    list-style-type: none;
+}
+
+.navbar a:hover {
+    background-color: #303a47;
+}
+
+.navbar a {
+    display: block;
+    padding: 25px 45px 25px 45px;
+    box-sizing: border-box;
+    text-decoration: none;
+    color: #dadcdf;
+    font-weight: bold;
+    font-size: 14px;
+    min-width: 150px;
+    text-align: center;
 }
 
 .navitems {
@@ -82,5 +113,4 @@ input[type=number] {
     align-items: center;
     flex-grow: 1;
     justify-content: right;
-    padding-right: 10px;
 }

@@ -26,62 +26,59 @@
         <input type="text" id="sku-search" name="sku">
         <button type="submit">Search</button>
     </form>
-    <table>
-        <thead>
-            <tr>
-                <th>SKU</th>
-                <th>Price</th>
-                <th>Quantity Available</th>
-                <th>Order</th>
-                <th>Est. Delivery</th>
-                <th>Details</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>SKU001</td>
-                <td>100</td>
-                <td>10</td>
-                <td>
-                    <select>
-                        <option value="1">+1</option>
-                        <option value="2">+2</option>
-                        <option value="3">+3</option>
-                    </select>
-                </td>
-                <td>2021-01-01</td>
-                <td><a href="details.php">Details</a></td>
 
-            </tr>
-            <tr>
-                <td>SKU002</td>
-                <td>200</td>
-                <td>20</td>
-                <td>
-                    <select>
-                        <option value="1">+1</option>
-                        <option value="2">+2</option>
-                        <option value="3">+3</option>
-                    </select>
-                </td>
-                <td>2021-01-02</td>
-                <td><a href="details.php">Details</a></td>
-            </tr>
-            <tr>
-                <td>SKU003</td>
-                <td>300</td>
-                <td>30</td>
-                <td>
-                    <select>
-                        <option value="1">+1</option>
-                        <option value="2">+2</option>
-                        <option value="3">+3</option>
-                    </select>
-                </td>
-                <td>2021-01-03</td>
-                <td><a href="details.php">Details</a></td>
-            </tr>
-    </table>
+    <div class="table-container">
+        <?php
+
+        include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
+
+        $search_term = $_GET["sku"];
+
+        if (empty($search_term)) {
+            $sql = "SELECT * FROM test_db.products;";
+        } else {
+            $sql = "SELECT * FROM test_db.products where name = '$search_term';";
+        }
+
+        echo $sql;
+
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            echo "<table>";
+            echo "<thead>";
+            echo "<tr>";
+            echo "<th>name</th>";
+            echo "<th>Price</th>";
+            echo "<th>Quantity Available</th>";
+            echo "<th>Order</th>";
+            echo "<th>Est. Delivery</th>";
+            echo "<th>Details</th>";
+            echo "</tr>";
+            echo "</thead>";
+            echo "<tbody>";
+            while ($row = $result->fetch_assoc()) {
+                $sku = $row["id"];
+
+                echo "<tr>";
+                echo "<td>" . $row["name"] . "</td>";
+                echo "<td>" . $row["price"] . "</td>";
+                echo "<td>" . $row["storage_amount"] . "</td>";
+                echo "<td>TODO</td>";
+                echo "<td>";
+                echo "<input type='number' id='quantity' name='quantity'>";
+                echo "</td>";
+                echo "<td><a href='/sp/catalog/product/$sku'>Details</a></td>";
+                echo "</tr>";
+            }
+            echo "</tbody>";
+            echo "</table>";
+        } else {
+            echo "0 results";
+        }
+
+        ?>
+    </div>
     <form>
         <!-- <label for="sku">SKU</label>
         <input type="text" id="sku" name="sku">
