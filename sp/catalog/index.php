@@ -1,21 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Catalogue</title>
     <style>
-    <?php include 'style.css'; ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; ?>
     </style>
 </head>
+
 <body>
-    <h1>Service Partner</h1>
+    <nav>
+        <ul class="navbar">
+            <h1>Service Partner</h1>
+            <div class="navitems">
+                <div><a href="/sp/orders/index.php">Orders</a></div>
+                <div><a href="/sp/catalog/index.php">Catalog</a></div>
+            </div>
+        </ul>
+    </nav>
+
     <form>
         <label for="sku">sku</label>
         <input type="text" id="sku-search" name="sku">
         <button type="submit">Search</button>
     </form>
-    
     <table>
         <thead>
             <tr>
@@ -33,11 +43,11 @@
                 <td>100</td>
                 <td>10</td>
                 <td>
-                <select>
-                    <option value="1">+1</option>
-                    <option value="2">+2</option>
-                    <option value="3">+3</option>
-                </select>
+                    <select>
+                        <option value="1">+1</option>
+                        <option value="2">+2</option>
+                        <option value="3">+3</option>
+                    </select>
                 </td>
                 <td>2021-01-01</td>
                 <td><a href="details.php">Details</a></td>
@@ -48,11 +58,11 @@
                 <td>200</td>
                 <td>20</td>
                 <td>
-                <select>
-                    <option value="1">+1</option>
-                    <option value="2">+2</option>
-                    <option value="3">+3</option>
-                </select>
+                    <select>
+                        <option value="1">+1</option>
+                        <option value="2">+2</option>
+                        <option value="3">+3</option>
+                    </select>
                 </td>
                 <td>2021-01-02</td>
                 <td><a href="details.php">Details</a></td>
@@ -62,11 +72,11 @@
                 <td>300</td>
                 <td>30</td>
                 <td>
-                <select>
-                    <option value="1">+1</option>
-                    <option value="2">+2</option>
-                    <option value="3">+3</option>
-                </select>
+                    <select>
+                        <option value="1">+1</option>
+                        <option value="2">+2</option>
+                        <option value="3">+3</option>
+                    </select>
                 </td>
                 <td>2021-01-03</td>
                 <td><a href="details.php">Details</a></td>
@@ -80,4 +90,5 @@
         <button type="submit">Order</button>
     </form>
 </body>
+
 </html>

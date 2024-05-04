@@ -1,33 +1,34 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-    <?php include 'style.css'; ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; ?>
     </style>
 </head>
 
 <body>
-<?php
+    <?php
 
-$request_uri = $_SERVER['REQUEST_URI'];
+    $request_uri = $_SERVER['REQUEST_URI'];
 
-// Remove any query parameters
-$url_parts = explode('?', $request_uri);
-$url = rtrim($url_parts[0], '/');
+    // Remove any query parameters
+    $url_parts = explode('?', $request_uri);
+    $url = rtrim($url_parts[0], '/');
 
-// Split the URL into segments
-$segments = explode('/', $url);
+    // Split the URL into segments
+    $segments = explode('/', $url);
 
-// The first segment is usually the controller or resource
-$controller = !empty($segments[0]) ? $segments[0] : 'home';
+    // The first segment is usually the controller or resource
+    $controller = !empty($segments[0]) ? $segments[0] : 'home';
 
-// The second segment might be the action or an identifier
-$action_or_id = !empty($segments[1]) ? $segments[1] : '';
+    // The second segment might be the action or an identifier
+    $action_or_id = !empty($segments[1]) ? $segments[1] : '';
 
-?>
+    ?>
     <h1>Storage <?php echo $segments[2] ?></h1>
     <h3>Storage Movement</h3>
     <form>
@@ -96,7 +97,7 @@ $action_or_id = !empty($segments[1]) ? $segments[1] : '';
                 <td>10</td>
                 <td>30</td>
             </tr>
-            
+
             <tr>
                 <td rowspan="2">2</td>
                 <td>1</td>
@@ -109,6 +110,7 @@ $action_or_id = !empty($segments[1]) ? $segments[1] : '';
                 <td>30</td>
             </tr>
         </tbody>
-    
+
 </body>
+
 </html>
