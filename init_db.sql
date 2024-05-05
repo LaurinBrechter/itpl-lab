@@ -7,3 +7,12 @@ CREATE TABLE products (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     storage_amount INT,
 );
+
+CREATE TABLE storage_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT,
+    storage_id INT,
+    order_id INT,
+    amount INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
