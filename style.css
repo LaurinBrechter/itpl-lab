@@ -1,6 +1,5 @@
 body {
     font-family: "Roboto", sans-serif;
-    padding: 10px;
 }
 
 table {
@@ -71,7 +70,6 @@ input[type=number] {
     border: 1px solid #ccc;
     border-radius: 4px;
     font-size: 16px;
-    width: 30px;
 }
 
 .navbar {
@@ -113,4 +111,8 @@ input[type=number] {
     align-items: center;
     flex-grow: 1;
     justify-content: right;
+}
+
+.catalog-table {
+    width: 100%;
 }

@@ -11,6 +11,7 @@
 </head>
 
 <body>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php'; ?>
     <?php
 
     $request_uri = $_SERVER['REQUEST_URI'];

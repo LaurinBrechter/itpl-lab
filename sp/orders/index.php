@@ -11,6 +11,7 @@
 </head>
 
 <body>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php'; ?>
     <h1>Orders</h1>
     <table>
         <thead>

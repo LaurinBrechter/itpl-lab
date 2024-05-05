@@ -19,7 +19,7 @@
 <body>
     Welcome Back!
     <ul>
-        <li><a href="sp/index.php">Service Partner</a></li>
+        <li><a href="sp/catalog/index.php">Service Partner</a></li>
         <li>
             <a href="storage/1">Storage 1</a>
             <a href="storage/2">Storage 2</a>
