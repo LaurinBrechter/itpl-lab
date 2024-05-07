@@ -35,9 +35,9 @@
 
         // echo $sql;
         
-        $result = $conn->query($sql);
+        $storage_logs = $conn->query($sql);
 
-        if ($result->num_rows > 0) {
+        if ($storage_logs->num_rows > 0) {
             echo "<table class='catalog-table'>";
             echo "<thead>";
             echo "<tr>";
@@ -50,7 +50,7 @@
             echo "</tr>";
             echo "</thead>";
             echo "<tbody>";
-            while ($row = $result->fetch_assoc()) {
+            while ($row = $storage_logs->fetch_assoc()) {
                 $sku = $row["id"];
 
                 echo "<tr>";

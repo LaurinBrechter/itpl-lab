@@ -11,14 +11,11 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 </head>
 
-
-
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/storage/storage_navbar.php'; ?>
     <?php
 
     include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
-    $sql = "INSERT INTO storage_logs (product_id, storage_id, order_id, amount) VALUES (1, 1, 1, 10);";
 
     $request_uri = $_SERVER['REQUEST_URI'];
 
@@ -37,11 +34,9 @@
 
     // check for post request
     
-    $sql = "SELECT * FROM test_db.storage_logs;";
-    $result = $conn->query($sql);
-
-
-
+    $storage_logs = $conn->query("SELECT * FROM test_db.storage_logs where;");
+    $products = $conn->query("SELECT * FROM test_db.products;");
+    $orders = $conn->query("SELECT * FROM test_db.orders;");
 
 
     ?>
@@ -51,15 +46,23 @@
         <input type="hidden" name="storage_id" value="<?php echo $segments[2] ?>">
         <label for="order-id">order-id</label>
         <select id="order-id" name="order_id">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
+            <?php
+            if ($orders->num_rows > 0) {
+                while ($row = $orders->fetch_assoc()) {
+                    echo "<option value='" . $row["id"] . "'>" . $row["id"] . "</option>";
+                }
+            }
+            ?>
         </select>
         <label for="sku">SKU</label>
         <select id="sku" name="product_id">
-            <option value="1">SKU001</option>
-            <option value="2">SKU002</option>
-            <option value="3">SKU003</option>
+            <?php
+            if ($products->num_rows > 0) {
+                while ($row = $products->fetch_assoc()) {
+                    echo "<option value='" . $row["id"] . "'>" . $row["name"] . "</option>";
+                }
+            }
+            ?>
         </select>
         <label for="quantity">Quantity</label>
         <input type="number" id="quantity" name="amount" required>
@@ -68,7 +71,7 @@
     </form>
     <!-- <p style="display: none;" id="notification">Thank You!</p> -->
     <?php
-    if ($result->num_rows > 0) {
+    if ($storage_logs->num_rows > 0) {
         echo "<table>";
         echo "<thead>";
         echo "<tr>";
@@ -78,7 +81,7 @@
         echo "</tr>";
         echo "</thead>";
         echo "<tbody>";
-        while ($row = $result->fetch_assoc()) {
+        while ($row = $storage_logs->fetch_assoc()) {
             echo "<tr>";
             echo "<td>" . $row["product_id"] . "</td>";
             echo "<td>" . $row["order_id"] . "</td>";
@@ -127,7 +130,7 @@
         </tbody>
 
 </body>
-
+<!-- https://stackoverflow.com/questions/6806028/post-without-redirect-with-php -->
 <script>
     $('#storage_movement_form').submit(function () {
         var post_data = $('#storage_movement_form').serialize();

@@ -16,3 +16,18 @@ CREATE TABLE storage_logs (
     amount INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+CREATE table orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    sp_id INT, -- service partner id
+    status ENUM('PENDING', 'COMPLETED', 'CANCELLED'),
+);
+
+CREATE TABLE order_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT,
+    product_id INT,
+    amount INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

@@ -35,8 +35,8 @@
 
     $sql = "SELECT * FROM products WHERE id = $product_id";
 
-    $result = $conn->query($sql);
-    $row = $result->fetch_assoc();
+    $storage_logs = $conn->query($sql);
+    $row = $storage_logs->fetch_assoc();
 
     echo "<h1>" . $row['name'] . "</h1>";
     echo "<p>" . $row['description'] . "</p>";
