@@ -46,11 +46,32 @@
 
     ?>
     <img src="https://placehold.co/500x300">
-    <form action="/sp/orders/create.php" method="post">
+    <form method="get" onsubmit="event.preventDefault(); saveToSessionStorage()">
+        <input type="hidden" name="product_name" value="<?php echo $row['name']; ?>">
         <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-        <button type="submit">Order</button>
+        <input type="number" name="amount" placeholder="Amount">
+        <button type="submit">Add to Cart</button>
     </form>
 
+    <script>
+        function saveToSessionStorage() {
+            console.log('saving to session storage');
+            var amount = document.querySelector('input[name="amount"]').value;
+            var productId = document.querySelector('input[name="product_id"]').value;
+            var productName = document.querySelector('input[name="product_name"]').value;
+            var existingItems = JSON.parse(sessionStorage.getItem('items')) || [];
+            var newItem = {
+                amount: amount,
+                productId: productId,
+                productName: productName
+            };
+            existingItems.push(newItem);
+            sessionStorage.setItem('items', JSON.stringify(existingItems));
+        }
+    </script>
 </body>
+</body>
+
+
 
 </html>
