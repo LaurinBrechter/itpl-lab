@@ -4,11 +4,115 @@ include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // log the request body
+    // request body: {"items": [{"amount":"20","productId":"1","productName":"Premium Smartphone"}], "sp_id": 1, "customer_id": 1}
 
-    echo $_POST;
+    $requestBody = file_get_contents('php://input');
+    $data = json_decode($requestBody, true);
 
-    $sql = "select * from products";
-    $conn->query($sql);
+    $items = $data["items"];
+    $sql_order_items = "INSERT INTO order_items (order_id, product_id, amount) VALUES ";
+    foreach ($items as $item) {
+        $productId = $item['productId'];
+        $amount = $item['amount'];
+        $sql_order_items .= "(LAST_INSERT_ID(), $productId, $amount), ";
+    }
+    $sql_order_items = rtrim($sql_order_items, ", ");
+
+    $sp_id = $data['sp_id'];
+    $customer_id = $data['customer_id'];
+
+
+    $customer = $conn->query("SELECT * FROM customers WHERE id = $customer_id");
+    $customer = $customer->fetch_assoc();
+
+    // return 404 if customer not found
+    if (!$customer) {
+        http_response_code(404);
+        echo '{"success": false, "msg": "Customer not found"}';
+        exit();
+    }
+
+
+    $production_plan_sql = "with oi as (
+        select * from order_items where order_id = 3
+    ),
+    product_storage as (
+        select oi.order_id, oi.product_id, oi.amount, p.storage_amount, p.storage_amount - oi.amount as new_amount
+        from oi
+        left join test_db.products p on oi.product_id = p.id
+    )
+    select 
+        if(ps.new_amount >= 0, ps.amount, ps.storage_amount) as to_send, -- Adjust this line as needed
+        case 
+            when ps.new_amount - 10 >= 0 then 0
+            when ps.new_amount <= 10 and ps.new_amount >= 0 then 10 - ps.new_amount + 5
+            when ps.new_amount < 0 then 10 + 5
+        end as to_produce_store,
+        if(ps.new_amount < 0, abs(ps.new_amount), 0) as to_produce_cust,
+        ps.*
+    from product_storage ps;";
+
+    $production_plan = $conn->query($production_plan_sql);
+
+    // echo json_encode($production_plan->fetch_all(MYSQLI_ASSOC));
+
+    foreach ($production_plan as $row) {
+        $to_send = $row['to_send'];
+        $to_produce_store = $row['to_produce_store'];
+        $to_produce_cust = $row['to_produce_cust'];
+        $product_id = $row['product_id'];
+        $order_id = $row['order_id'];
+
+        if ($to_send > 0) {
+            // reduce the official storage amount
+            // TODO needs to be added back if e.g. the order is cancelled
+            $conn->query("UPDATE products SET storage_amount = storage_amount - $to_send WHERE id = $product_id");
+
+            // reserve the amount in the storage
+            $conn->query("INSERT INTO storage_logs (product_id, storage_id, order_id, amount, detail) 
+            VALUES ($product_id, 1, $order_id, $to_send, 'RESERVED')
+            ");
+        }
+        if ($to_produce_store > 0) {
+            $conn->query("INSERT INTO 
+            production_plan (product_id, amount, order_id, status, priority) 
+            VALUES ($product_id, $to_produce_store, $order_id, 'PENDING', 'LOW')");
+        }
+        if ($to_produce_cust > 0) {
+            $conn->query("INSERT INTO 
+        production_plan (product_id, amount, order_id, status, priority) 
+        VALUES ($product_id, $to_produce_cust, $order_id, 'PENDING', 'MEDIUM')");
+        }
+
+        // $conn->query("UPDATE products SET storage_amount = storage_amount - $to_send WHERE id = $product_id");
+    }
+
+
+
+
+    // if ($customer["isVip"] == 1) {
+    //     $priority = "HIGH";
+    // } else {
+    //     $priority = "MEDIUM";
+    // }
+
+    // try {
+    //     $sql = "
+    //     START TRANSACTION;
+    //     INSERT INTO orders (sp_id, status, customer_id, priority) 
+    //     VALUES ($sp_id, 'PENDING', $customer_id, '$priority');
+    //     $sql_order_items;
+    //     COMMIT;";
+    //     $res = $conn->multi_query($sql);
+
+    //     if ($res) {
+    //         echo '{"success": true, "msg":' . $sql . '}';
+    //     } else {
+    //         throw new Exception("Error: " . $conn->error);
+    //     }
+    // } catch (Exception $e) {
+    //     $msg = $e->getMessage();
+    //     echo '{"success": false, "msg": "' . $msg . '"}';
+    // }
 }
 // echo $_SERVER['REQUEST_METHOD'];
