@@ -12,39 +12,39 @@
 
 <body>
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php'; ?>
+
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
+
+    // TODO filter for sp_id in orders table
+    $orders = $conn->query("SELECT * FROM test_db.orders;");
+
+    ?>
+
     <h1>Orders</h1>
     <table>
         <thead>
             <tr>
                 <th>Order Id</th>
-                <th>SKU</th>
-                <th>Destination</th>
+                <th>Order Date</th>
                 <th>Est. Delivery</th>
                 <th>Status</th>
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td>1</td>
-                <td>SKU001</td>
-                <td>Elm Street</td>
-                <td>2021-01-01</td>
-                <td>Delivered</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>SKU002</td>
-                <td>Storage</td>
-                <td>2021-01-02</td>
-                <td>Delivered</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>SKU003</td>
-                <td>Storage</td>
-                <td>2021-01-03</td>
-                <td>Delivered</td>
-            </tr>
+            <?php
+            if ($orders->num_rows > 0) {
+                while ($row = $orders->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . $row['id'] . "</td>";
+                    echo "<td>" . $row['created_at'] . "</td>";
+                    echo "<td>" . $row['est_delivery'] . "</td>";
+                    echo "<td>" . $row['status'] . "</td>";
+                    echo "</tr>";
+                }
+            } else {
+                echo "<tr><td colspan='5'>No orders found</td></tr>";
+            }
+            ?>
 
 </body>
 

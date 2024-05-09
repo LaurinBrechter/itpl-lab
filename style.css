@@ -2,7 +2,12 @@ body {
     font-family: "Roboto", sans-serif;
     margin: 0;
     padding: 0;
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
 }
+
+
 
 table {
     border-collapse: collapse;
@@ -14,7 +19,7 @@ table td {
 }
 
 .table-container {
-    height: 400px;
+    height: 600px;
     overflow-y: auto;
 }
 
@@ -43,7 +48,6 @@ table tbody tr:nth-child(odd) {
 
 button {
     background-color: #4CAF50;
-    /* Green */
     border: none;
     color: white;
     padding: 10px 20px;
@@ -77,9 +81,9 @@ input[type=number] {
 .navbar {
     display: flex;
     flex-direction: row;
-    gap: 30px;
     align-items: center;
     background-color: #394555;
+    margin: 0;
 }
 
 .navbar h1 {
@@ -117,4 +121,11 @@ input[type=number] {
 
 .catalog-table {
     width: 100%;
+}
+
+form {
+    background-color: #dadcdf;
+    /* display: inline-block; */
+    /* width: fit-content; */
+    padding: 5px;
 }

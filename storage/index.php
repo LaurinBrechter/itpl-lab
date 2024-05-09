@@ -34,15 +34,25 @@
 
     // check for post request
     
-    $storage_logs = $conn->query("SELECT * FROM test_db.storage_logs where;");
+    $storage_logs = $conn->query(
+        "
+    SELECT p.name, sl.order_id, sl.amount, sl.product_id  FROM (   
+    SELECT * 
+    FROM test_db.storage_logs 
+    where storage_id = $segments[2] ) as sl
+    left join products p on sl.product_id = p.id"
+    );
+
     $products = $conn->query("SELECT * FROM test_db.products;");
     $orders = $conn->query("SELECT * FROM test_db.orders;");
 
 
     ?>
-    <h3>Storage Movement</h3>
+
     <!-- <form id="storage_movement_form" onsubmit="event.preventDefault();"> -->
-    <form id="storage_movement_form">
+    <!-- <?php echo $segments[2] ?> -->
+    <form id="storage_movement_form" onsubmit="event.preventDefault()">
+        <h3>Storage Movement</h3>
         <input type="hidden" name="storage_id" value="<?php echo $segments[2] ?>">
         <label for="order-id">order-id</label>
         <select id="order-id" name="order_id">
@@ -75,15 +85,15 @@
         echo "<table>";
         echo "<thead>";
         echo "<tr>";
-        echo "<th>product_id</th>";
-        echo "<th>order_id</th>";
+        echo "<th>Product Name</th>";
+        echo "<th>Order Id</th>";
         echo "<th>amount</th>";
         echo "</tr>";
         echo "</thead>";
         echo "<tbody>";
         while ($row = $storage_logs->fetch_assoc()) {
             echo "<tr>";
-            echo "<td>" . $row["product_id"] . "</td>";
+            echo "<td>" . $row["name"] . "</td>";
             echo "<td>" . $row["order_id"] . "</td>";
             echo "<td>" . $row["amount"] . "</td>";
             echo "</tr>";
@@ -136,6 +146,7 @@
         var post_data = $('#storage_movement_form').serialize();
         $.post('/server/insert_storage_movement.php', post_data, function (data) {
             // $('#notification').show();
+            console.log(data);
         });
     });
 </script>
