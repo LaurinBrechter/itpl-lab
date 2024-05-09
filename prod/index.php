@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <h1>Production Plan</h1>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/prod/prod_navbar.php'; ?>
     <form>
         <button type="submit">Save</button>
     </form>
