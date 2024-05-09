@@ -44,7 +44,7 @@
             echo "<th>name</th>";
             echo "<th>Price</th>";
             echo "<th>Quantity Available</th>";
-            echo "<th>Order</th>";
+            // echo "<th>Order</th>";
             echo "<th>Est. Delivery</th>";
             echo "<th>Details</th>";
             echo "</tr>";
@@ -55,9 +55,9 @@
 
                 echo "<tr>";
                 echo "<td>" . $row["name"] . "</td>";
-                echo "<td>" . $row["price"] . "</td>";
+                echo "<td>" . $row["price"] . "€</td>";
                 echo "<td>" . $row["storage_amount"] . "</td>";
-                echo "<td>TODO</td>";
+                // echo "<td>TODO</td>";
                 // echo "<td>";
                 // echo "<input type='number' id='quantity' name='quantity'>";
                 // echo "</td>";
@@ -73,13 +73,13 @@
 
         ?>
     </div>
-    <form>
-        <!-- <label for="sku">SKU</label>
+    <!-- <form>
+        <label for="sku">SKU</label>
         <input type="text" id="sku" name="sku">
         <label for="quantity">Quantity</label>
-        <input type="number" id="quantity" name="quantity"> -->
+        <input type="number" id="quantity" name="quantity">
         <button type="submit">Order</button>
-    </form>
+    </form> -->
 </body>
 
 </html>

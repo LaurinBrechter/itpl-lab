@@ -19,7 +19,7 @@
     <table>
         <thead>
             <tr>
-                <th>Product ID</th>
+                <th>Product Name</th>
                 <th>Amount</th>
             </tr>
         </thead>
@@ -45,8 +45,8 @@
         for (var i = 0; i < existingItems.length; i++) {
             var item = existingItems[i];
             html += '<tr>';
-            html += '<td>Product ID: ' + item.productName + '</td>';
-            html += '<td>Amount: ' + item.amount + '</td>';
+            html += '<td>' + item.productName + '</td>';
+            html += '<td>' + item.amount + '</td>';
             html += '<td><button onclick="removeItem(' + i + ')">Remove</button></td>'
             html += '</tr>';
         }
@@ -63,12 +63,22 @@
 
 <script>
     $('#buy-btn').click(function () {
-        console.log("buying items")
         var existingItems = JSON.parse(sessionStorage.getItem('items')) || [];
+        console.log("buying items", existingItems)
 
-        $.post('/server/process_order.php', existingItems, function (data) {
+        $.post('/server/process_order.php', { 'items': JSON.stringify(existingItems) }, function (data) {
             // $('#notification').show();
-            console.log(data);
+            console.log(data)
+
+            data = JSON.parse(data); // Convert data from string to object
+
+            if (data["success"] === true) {
+                alert("Order successful");
+                sessionStorage.setItem('items', JSON.stringify([]));
+                renderItems();
+            } else if (data["success"] === false) {
+                alert("Order failed: " + data["msg"]);
+            }
         });
 
 
