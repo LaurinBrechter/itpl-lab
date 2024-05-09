@@ -5,19 +5,77 @@ INSERT INTO `addresses` (`address_id`, `street`, `house_number`, `city`, `state`
 	(4, 'Musterstraße', '123', 'Musterstadt', 'NRW', '12345', 'Deutschland'),
 	(5, 'Beispielweg', '456', 'Beispielburg', 'Bayern', '23456', 'Deutschland'),
 	(6, 'Demoallee', '789', 'Demostadt', 'Hessen', '34567', 'Deutschland'),
-	(7, 'Teststraße', '101', 'Testort', 'Sachsen', '45678', 'Deutschland'),
-	(8, 'Straßenstraße', '202', 'Ortsstadt', 'Baden-Württemberg', '56789', 'Deutschland');
+	(7, 'Lagerstraße ', '101', 'Testort', 'Sachsen', '45678', 'Deutschland'),
+	(8, 'Lagerstraße', '202', 'Ortsstadt', 'Baden-Württemberg', '56789', 'Deutschland'),
+	(9, 'Pine Street', '10', 'Munich', 'Bayern', '80331', 'Deutschland'),
+	(10, 'Maple Street', '15', 'Berlin', 'Berlin', '10115', 'Deutschland'),
+	(11, 'Oak Street', '20', 'Frankfurt', 'Hessen', '60311', 'Deutschland'),
+	(12, 'Elm Street', '25', 'Stuttgart', 'Baden-Württemberg', '70173', 'Deutschland'),
+	(13, 'Cedar Street', '30', 'Hamburg', 'Hamburg', '20095', 'Deutschland'),
+	(14, 'Birch Street', '35', 'Leipzig', 'Sachsen', '04109', 'Deutschland'),
+	(15, 'Walnut Street', '40', 'Dresden', 'Sachsen', '01067', 'Deutschland'),
+	(16, 'Cherry Street', '45', 'Hannover', 'Niedersachsen', '30159', 'Deutschland'),
+	(17, 'Ash Street', '50', 'Nürnberg', 'Bayern', '90402', 'Deutschland'),
+	(18, 'Alder Street', '55', 'Düsseldorf', 'NRW', '40210', 'Deutschland'),
+	(19, 'Spruce Street', '60', 'Bremen', 'Bremen', '28195', 'Deutschland'),
+	(20, 'Beech Street', '65', 'Bonn', 'NRW', '53111', 'Deutschland'),
+	(21, 'Sycamore Street', '70', 'Mainz', 'Rheinland-Pfalz', '55116', 'Deutschland'),
+	(22, 'Magnolia Street', '75', 'Wiesbaden', 'Hessen', '65183', 'Deutschland'),
+	(23, 'Willow Street', '80', 'Kiel', 'Schleswig-Holstein', '24103', 'Deutschland'),
+	(24, 'Poplar Street', '85', 'Freiburg', 'Baden-Württemberg', '79098', 'Deutschland'),
+	(25, 'Hickory Street', '90', 'Rostock', 'Mecklenburg-Vorpommern', '18055', 'Deutschland'),
+	(26, 'Dogwood Street', '95', 'Lübeck', 'Schleswig-Holstein', '23552', 'Deutschland'),
+	(27, 'Maple Avenue', '100', 'Koblenz', 'Rheinland-Pfalz', '56068', 'Deutschland'),
+	(28, 'Pine Avenue', '105', 'Erfurt', 'Thüringen', '99084', 'Deutschland'),
+	(29, 'Produktionsstraße', '1', 'Dortmund', NULL, '44221', 'Deutschland'),
+	(30, 'Produktionsstraße', '68', 'Dortmund', NULL, '44221', 'Deutschland'),
+	(31, 'Firmensitzstraße', '1', 'Essen', NULL, '45138', 'Deutschland');
 
 INSERT INTO `customers` (`customer_id`, `name`, `address_id`, `telephone_number`, `isVip`) VALUES
-	(1, 'Max Mustermann', 1, '+1234567890', 'Yes'),
-	(2, 'Erika Musterfrau', 2, '+2147483647', 'No'),
-	(3, 'John Doe', 8, '+3456789012', 'No'),
-	(4, 'TU Dortmund', 3, '+492317551', 'Yes');
+	(1, 'Max Mustermann', 1, '+1234567890', 1),
+	(2, 'Erika Musterfrau', 2, '+2147483647', 0),
+	(3, 'John Doe', 8, '+3456789012', 0),
+	(4, 'TU Dortmund', 3, '+492317551', 1),
+	(5, 'Julia Schneider', 9, '+491234567890', 0),
+	(6, 'Hans Müller', 10, '+491239876543', 1),
+	(7, 'Sara Smith', 11, '+491235555555', 0),
+	(8, 'Michael Johnson', 12, '+491234444444', 0),
+	(9, 'Claire Dubois', 13, '+491233333333', 1),
+	(10, 'Alicia Sanchez', 14, '+491232222222', 0),
+	(11, 'Yuki Tanaka', 15, '+491231111111', 0),
+	(12, 'Luca Rossi', 16, '+491239999999', 1),
+	(13, 'Emma Williams', 17, '+491238888888', 0),
+	(14, 'Oliver Jones', 18, '+491237777777', 0),
+	(15, 'Mia Taylor', 19, '+491236666666', 1),
+	(16, 'Noah Wilson', 20, '+491235555555', 0),
+	(17, 'Sophia Brown', 21, '+491234444444', 0),
+	(18, 'Liam Davis', 22, '+491233333333', 1),
+	(19, 'Isabella Martinez', 23, '+491232222222', 0),
+	(20, 'Ethan Lopez', 24, '+491231111111', 0),
+	(21, 'Amelia Gonzalez', 25, '+491239999999', 1),
+	(22, 'Jacob White', 26, '+491238888888', 0),
+	(23, 'Charlotte Harris', 27, '+491237777777', 0),
+	(24, 'William Clark', 28, '+491236666666', 1);
 
 INSERT INTO `orders` (`order_id`, `priority`, `sp_id`, `customer_id`, `status`, `created_at`) VALUES
 	(1, 'High', 1, 1, 'PENDING', '2024-05-08 14:35:49'),
 	(2, 'Medium', 2, 2, 'COMPLETED', '2024-05-08 14:35:49'),
-	(3, 'low', 1, 3, 'CANCELLED', '2024-05-08 14:35:49');
+	(3, 'low', 1, 3, 'CANCELLED', '2024-05-08 14:35:49'),
+	(4, 'High', 1, 9, 'PENDING', '2024-05-09 10:00:00'),
+	(5, 'Medium', 2, 10, 'COMPLETED', '2024-05-09 10:10:00'),
+	(6, 'low', 1, 11, 'CANCELLED', '2024-05-09 10:20:00'),
+	(7, 'High', 1, 12, 'PENDING', '2024-05-09 10:30:00'),
+	(8, 'Medium', 2, 13, 'COMPLETED', '2024-05-09 10:40:00'),
+	(9, 'low', 1, 14, 'CANCELLED', '2024-05-09 10:50:00'),
+	(10, 'High', 1, 15, 'PENDING', '2024-05-09 11:00:00'),
+	(11, 'Medium', 2, 16, 'COMPLETED', '2024-05-09 11:10:00'),
+	(12, 'low', 1, 17, 'CANCELLED', '2024-05-09 11:20:00'),
+	(13, 'High', 1, 18, 'PENDING', '2024-05-09 11:30:00'),
+	(14, 'Medium', 2, 19, 'COMPLETED', '2024-05-09 11:40:00'),
+	(15, 'low', 1, 20, 'CANCELLED', '2024-05-09 11:50:00'),
+	(16, 'High', 1, 21, 'PENDING', '2024-05-09 12:00:00'),
+	(17, 'Medium', 2, 22, 'COMPLETED', '2024-05-09 12:10:00'),
+	(18, 'low', 1, 23, 'CANCELLED', '2024-05-09 12:20:00');
 
 INSERT INTO `order_items` (`item_count_id`, `order_id`, `sku`, `amount`, `created_at`) VALUES
 	(1, 1, 60, 3, '2024-05-08 18:41:13'),
@@ -25,7 +83,41 @@ INSERT INTO `order_items` (`item_count_id`, `order_id`, `sku`, `amount`, `create
 	(3, 2, 67, 4, '2024-05-08 18:45:35'),
 	(4, 3, 59, 3, '2024-05-08 18:47:12'),
 	(5, 3, 14, 2, '2024-05-08 18:47:21'),
-	(6, 3, 26, 6, '2024-05-08 18:47:28');
+	(6, 3, 26, 6, '2024-05-08 18:47:28'),
+	(7, 4, 1, 2, '2024-05-09 10:45:00'),
+	(8, 4, 7, 1, '2024-05-09 10:45:05'),
+	(9, 5, 8, 1, '2024-05-09 10:55:00'),
+	(10, 5, 9, 1, '2024-05-09 10:55:05'),
+	(11, 6, 10, 2, '2024-05-09 11:05:00'),
+	(12, 6, 11, 1, '2024-05-09 11:05:05'),
+	(13, 7, 12, 1, '2024-05-09 11:15:00'),
+	(14, 7, 13, 2, '2024-05-09 11:15:05'),
+	(15, 8, 14, 3, '2024-05-09 11:25:00'),
+	(16, 8, 15, 1, '2024-05-09 11:25:05'),
+	(17, 9, 16, 2, '2024-05-09 11:35:00'),
+	(18, 9, 17, 1, '2024-05-09 11:35:05'),
+	(19, 10, 18, 1, '2024-05-09 11:45:00'),
+	(20, 10, 19, 2, '2024-05-09 11:45:05'),
+	(21, 11, 20, 2, '2024-05-09 11:55:00'),
+	(22, 11, 21, 3, '2024-05-09 11:55:05'),
+	(23, 12, 22, 1, '2024-05-09 12:05:00'),
+	(24, 12, 23, 2, '2024-05-09 12:05:05'),
+	(25, 13, 24, 1, '2024-05-09 12:15:00'),
+	(26, 13, 25, 1, '2024-05-09 12:15:05'),
+	(27, 14, 26, 2, '2024-05-09 12:25:00'),
+	(28, 14, 27, 3, '2024-05-09 12:25:05'),
+	(29, 15, 28, 1, '2024-05-09 12:35:00'),
+	(30, 15, 29, 2, '2024-05-09 12:35:05'),
+	(31, 16, 30, 2, '2024-05-09 12:45:00'),
+	(32, 16, 31, 1, '2024-05-09 12:45:05'),
+	(33, 17, 32, 1, '2024-05-09 12:55:00'),
+	(34, 17, 33, 3, '2024-05-09 12:55:05'),
+	(35, 18, 34, 2, '2024-05-09 13:05:00'),
+	(36, 18, 35, 2, '2024-05-09 13:05:05');
+
+INSERT INTO `production_facilities` (`production_facility_id`, `address_id`) VALUES
+	(1, 29),
+	(2, 30);
 
 INSERT INTO `products` (`sku`, `name`, `price`, `production_duration`, `description`, `created_at`, `storage_amount`) VALUES
 	(1, 'Premium Smartphone', 599.99, 2, 'High-end smartphone with cutting-edge features.', '2024-05-07 15:30:01', 44),
@@ -99,8 +191,38 @@ INSERT INTO `products` (`sku`, `name`, `price`, `production_duration`, `descript
 	(69, 'Stainless Steel Travel Mug', 14.99, 1, 'Keep your beverages hot or cold on-the-go with this stainless steel travel mug.', '2024-05-07 15:30:01', 16),
 	(70, 'Phone Stand', 9.99, 1, 'View your phone hands-free in portrait or landscape mode with this versatile phone stand.', '2024-05-07 15:30:01', 81);
 
-INSERT INTO `servicepartners` (`sp_id`, `name`, `tax_number`, `address_id`) VALUES
-	(1, 'TechnikService24', '987654321', 7),
-	(2, 'ReparaturProfi', '876543219', 8),
-	(3, 'Inhouse Reperatur', '273647821', NULL);
+INSERT INTO `servicepartners` (`sp_id`, `name`, `tax_number`, `address_id`, `isInternal`) VALUES
+	(1, 'TechnikService24', '987654321', 7, 0),
+	(2, 'ReparaturProfi', '876543219', 8, 0),
+	(3, 'Borat Sagdiyev', '', 31, 1),
+	(4, 'Adam Sandler', '', 31, 1),
+	(5, 'Johnny Smart', '', 31, 1),
+	(6, 'GadgetSOS GmbH', 'DE374638306', 20, 0),
+	(7, 'Innovative Reparaturen GmbH', 'DE274638305', 19, 0),
+	(8, 'ElektronikFix GmbH', 'DE123456789', 1, 0),
+	(9, 'TechSupport Plus', 'DE987654321', 2, 0),
+	(10, 'ReparaturMeister GmbH', 'DE192837465', 3, 0),
+	(11, 'HausTechnik Solutions', 'DE564738291', 4, 0),
+	(12, 'ComputerHilfe Schnell', 'DE665738291', 5, 0),
+	(13, 'HandyReparatur Blitz', 'DE764738292', 6, 0),
+	(14, 'GadgetRepair KG', 'DE864738293', 7, 0),
+	(15, 'ServicePlus AG', 'DE964738294', 8, 0),
+	(16, 'TechnologieHilfe GmbH', 'DE174738295', 9, 0),
+	(17, 'MobileAssist GmbH', 'DE274738296', 10, 0),
+	(18, 'ElektroProfi24', 'DE374738297', 11, 0),
+	(19, 'SmartHome Reparaturen', 'DE474738298', 12, 0),
+	(20, 'ITSupport 360', 'DE574738299', 13, 0),
+	(21, 'GeräteService 24/7', 'DE674738300', 14, 0),
+	(22, 'NetzwerkProfis GmbH', 'DE774738301', 15, 0),
+	(23, 'PCReparatur Zentrum', 'DE874738302', 16, 0),
+	(24, 'TechnikSupport Team', 'DE974738303', 17, 0),
+	(25, 'Elektro Notdienst', 'DE174638304', 18, 0);
 
+INSERT INTO `storage_facilities` (`storage_facility_id`, `address_id`) VALUES
+	(1, 7),
+	(2, 8);
+
+INSERT INTO `storage_log` (`storage_event_id`, `sku`, `order_id`, `amount`, `created_at`) VALUES
+	(1, 31, 2, 0, '2024-05-08 18:55:01'),
+	(2, 53, 1, 0, '2024-05-08 18:55:06'),
+	(3, 41, NULL, 0, '2024-05-08 18:55:09');
