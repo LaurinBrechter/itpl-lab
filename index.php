@@ -30,7 +30,7 @@
             <a href="prod/2">production 2</a>
             <a href="prod/3">production 3</a>
         </li>
-		<li><a href="Management Tab.html">Management</a></li>
+		<li><a href="localholst/mgmt">Management</a></li>
 		
     </ul>
 </body>
