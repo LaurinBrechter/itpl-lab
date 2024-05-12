@@ -49,7 +49,7 @@
     <form method="get" onsubmit="event.preventDefault(); saveToSessionStorage()">
         <input type="hidden" name="product_name" value="<?php echo $row['name']; ?>">
         <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-        <input type="number" name="amount" placeholder="Amount">
+        <input type="number" name="amount" placeholder="Amount" min="1" step="1">
         <button type="submit">Add to Cart</button>
     </form>
 
@@ -60,13 +60,19 @@
             var productId = document.querySelector('input[name="product_id"]').value;
             var productName = document.querySelector('input[name="product_name"]').value;
             var existingItems = JSON.parse(sessionStorage.getItem('items')) || [];
-            var newItem = {
-                amount: amount,
-                productId: productId,
-                productName: productName
-            };
-            existingItems.push(newItem);
+            var existingItem = existingItems.find(item => item.productId === productId);
+            if (existingItem) {
+                existingItem.amount = parseInt(existingItem.amount) + parseInt(amount);
+            } else {
+                var newItem = {
+                    amount: amount,
+                    productId: productId,
+                    productName: productName
+                };
+                existingItems.push(newItem);
+            }
             sessionStorage.setItem('items', JSON.stringify(existingItems));
+            alert(`Added ${amount} of ${productName} to cart`);
         }
     </script>
 </body>
