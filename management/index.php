@@ -31,8 +31,11 @@
         <input type="text" id="zip" name="zip" required><br><br>
         <label for="country">Land:</label>
         <input type="text" id="country" name="country" required><br><br>
-        <label for="isInternal">Intern (1=Ja, 0=Nein):</label>
-        <input type="number" id="isInternal" name="isInternal" required><br><br>
+		<label for="isInternal">Zugehörigkeit:</label>
+		<select id="isInternal" name="isInternal" required>
+		<option value="1">Intern</option>
+		<option value="0" selected>Extern</option>
+		</select><br><br>
         <input type="submit" value="Servicepartner hinzufügen">
     </form>
 
@@ -54,8 +57,11 @@
         <input type="text" id="country" name="country" required><br><br>
         <label for="telephone_number">Telefonnummer:</label>
         <input type="text" id="telephone_number" name="telephone_number"><br><br>
-        <label for="isVip">VIP Status (1=Ja, 0=Nein):</label>
-        <input type="number" id="isVip" name="isVip" required><br><br>
+      	<label for="isVip">VIP Status:</label>
+		<select id="isVip" name="isVip" required>
+		<option value="1">Ja</option>
+		<option value="0" selected>Nein</option>
+		</select><br><br>
         <input type="submit" value="Kunden hinzufügen">
     </form>
 </body>
