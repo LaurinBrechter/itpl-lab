@@ -50,10 +50,10 @@ button {
     background-color: #4CAF50;
     border: none;
     color: white;
-    padding: 10px 20px;
+    padding: 5px 10px;
     text-align: center;
     text-decoration: none;
-    display: inline-block;
+    /* display: inline-block; */
     font-size: 16px;
     margin: 4px 2px;
     cursor: pointer;
@@ -128,4 +128,12 @@ form {
     /* display: inline-block; */
     /* width: fit-content; */
     padding: 5px;
+}
+
+.production-item-table {
+    width: 100%;
+}
+
+.storage-movement-table {
+    width: 100%;
 }

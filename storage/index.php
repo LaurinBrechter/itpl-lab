@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Storage</title>
     <style>
         <?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; ?>
     </style>
@@ -36,11 +36,25 @@
     
     $storage_logs = $conn->query(
         "
-    SELECT p.name, sl.order_id, sl.amount, sl.product_id  FROM (   
-    SELECT * 
-    FROM test_db.storage_logs 
-    where storage_id = $segments[2] ) as sl
-    left join products p on sl.product_id = p.id"
+        SELECT 
+            p.name, 
+            sl.id,
+            sl.order_id, 
+            sl.amount, 
+            sl.product_id, 
+            sl.detail, 
+            sl.created_at,
+            CONCAT(a.street, ', ', a.house_number, ', ', a.city, ', ', a.zip, ', ', a.country) as address 
+        FROM (   
+            SELECT * 
+            FROM test_db.storage_logs 
+            where storage_id = $segments[2] ) as sl
+        left join products p on sl.product_id = p.id
+        left join orders o on sl.order_id = o.id
+        left join customers c on o.customer_id = c.id
+        left join addresses a on c.address_id = a.address_id
+        order by sl.detail asc, sl.created_at asc;
+    "
     );
 
     $products = $conn->query("SELECT * FROM test_db.products;");
@@ -80,65 +94,50 @@
         <!-- <input type="submit" value="" id="submit" name="submit"> -->
     </form>
     <!-- <p style="display: none;" id="notification">Thank You!</p> -->
-    <?php
-    if ($storage_logs->num_rows > 0) {
-        echo "<table>";
-        echo "<thead>";
-        echo "<tr>";
-        echo "<th>Product Name</th>";
-        echo "<th>Order Id</th>";
-        echo "<th>amount</th>";
-        echo "</tr>";
-        echo "</thead>";
-        echo "<tbody>";
-        while ($row = $storage_logs->fetch_assoc()) {
+    <div class="table-container">
+        <?php
+        if ($storage_logs->num_rows > 0) {
+            echo "<table class='storage-movement-table'>";
+            echo "<thead>";
             echo "<tr>";
-            echo "<td>" . $row["name"] . "</td>";
-            echo "<td>" . $row["order_id"] . "</td>";
-            echo "<td>" . $row["amount"] . "</td>";
+            echo "<th>Product Name</th>";
+            echo "<th>Created At</th>";
+            echo "<th>Order Id</th>";
+            echo "<th>amount</th>";
+            echo "<th>Destination</th>";
+            echo "<th>Details</th>";
+            echo "<th>Action</th>";
             echo "</tr>";
+            echo "</thead>";
+            echo "<tbody>";
+            while ($row = $storage_logs->fetch_assoc()) {
+                echo "<tr>";
+                echo "<td>" . $row["name"] . "</td>";
+                echo "<td>" . $row["created_at"] . "</td>";
+                echo "<td>" . $row["order_id"] . "</td>";
+                echo "<td>";
+                if ($row["amount"] > 0) {
+                    echo "IN " . $row["amount"];
+                } elseif ($row["amount"] < 0) {
+                    echo "OUT " . abs($row["amount"]);
+                } else {
+                    echo $row["amount"];
+                }
+                echo "</td>";
+                echo "<td>" . $row["address"] . "</td>";
+                echo "<td>" . $row["detail"] . "</td>";
+                if ($row["detail"] == "RESERVED") {
+                    echo "<td><button onclick=\"confirmShipment(" . $row["id"] . ")\">Confirm Shipment</button></td>";
+                } else {
+                    echo "<td></td>";
+                }
+                echo "</tr>";
+            }
+            echo "</tbody>";
+            echo "</table>";
         }
-        echo "</tbody>";
-        echo "</table>";
-    }
-    ?>
-    <h3>Open Orders</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>Order Id</th>
-                <th>SKU</th>
-                <th>Quantity</th>
-                <th>Destination</th>
-                <th>Order Date</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td rowspan="2">1</td>
-                <td>1</td>
-                <td>100</td>
-                <td rowspan="2">Dortmunder Str. 3</td>
-                <td rowspan="2">2021-01-01</td>
-            </tr>
-            <tr>
-                <td>10</td>
-                <td>30</td>
-            </tr>
-
-            <tr>
-                <td rowspan="2">2</td>
-                <td>1</td>
-                <td>100</td>
-                <td rowspan="2">Dortmunder Str. 10</td>
-                <td rowspan="2">2021-01-01</td>
-            </tr>
-            <tr>
-                <td>10</td>
-                <td>30</td>
-            </tr>
-        </tbody>
-
+        ?>
+    </div>
 </body>
 <!-- https://stackoverflow.com/questions/6806028/post-without-redirect-with-php -->
 <script>
@@ -147,8 +146,32 @@
         $.post('/server/insert_storage_movement.php', post_data, function (data) {
             // $('#notification').show();
             console.log(data);
+            // reload the page
+            location.reload();
         });
     });
+
+    function confirmShipment(id) {
+
+        console.log(id);
+
+        $.post('/server/confirm_shipment.php', {
+            id: id
+        }, function (data) {
+
+            // read json
+            res = JSON.parse(data);
+
+            console.log(data);
+            if (res.success) {
+                alert("Shipment confirmed");
+                location.reload();
+            } else {
+                alert("Failed to confirm shipment");
+            }
+        });
+    }
+
 </script>
 
 </html>
