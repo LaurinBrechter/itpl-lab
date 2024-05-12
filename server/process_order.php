@@ -6,8 +6,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // request body: {"items": [{"amount":"20","productId":"1","productName":"Premium Smartphone"}], "sp_id": 1, "customer_id": 1}
 
+    // when requesting via postman
     $requestBody = file_get_contents('php://input');
     $data = json_decode($requestBody, true);
+
+    // when requesting through the browser
+    if (!$data) {
+        $data = $_POST;
+    }
+
 
     $items = $data["items"];
     $sql_order_items = "INSERT INTO order_items (order_id, product_id, amount) VALUES ";
@@ -21,9 +28,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sp_id = $data['sp_id'];
     $customer_id = $data['customer_id'];
 
-
-    $customer = $conn->query("SELECT * FROM customers WHERE id = $customer_id");
+    $customer = $conn->query("SELECT * FROM customers WHERE id = $customer_id;");
     $customer = $customer->fetch_assoc();
+
 
     // return 404 if customer not found
     if (!$customer) {
@@ -32,9 +39,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
+    if ($customer["isVip"] == 1) {
+        $priority = "HIGH";
+    } else {
+        $priority = "MEDIUM";
+    }
+
+
+
+    $sql = "
+    START TRANSACTION;
+    INSERT INTO orders (sp_id, status, customer_id, priority) 
+    VALUES ($sp_id, 'PENDING', $customer_id, '$priority');
+    SET @order_id = LAST_INSERT_ID();
+    $sql_order_items;
+    COMMIT;";
+
+    $res = $conn->multi_query($sql);
+
+
+    // Fetch all results of the multi-query
+    do {
+        if ($result = $conn->store_result()) {
+            $result->free();
+        }
+    } while ($conn->more_results() && $conn->next_result());
+
+    if ($conn->affected_rows === -1) {
+        echo "Error: " . $conn->error;
+    } else {
+        $order_id_query = "SELECT @order_id as order_id";
+        $order_id_result = $conn->query($order_id_query);
+        $order_id_row = $order_id_result->fetch_assoc();
+        $order_id = $order_id_row['order_id'];
+
+        print_r($order_id);
+    }
+
 
     $production_plan_sql = "with oi as (
-        select * from order_items where order_id = 3
+        select * from order_items where order_id = $order_id
     ),
     product_storage as (
         select oi.order_id, oi.product_id, oi.amount, p.storage_amount, p.storage_amount - oi.amount as new_amount
@@ -50,11 +94,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         end as to_produce_store,
         if(ps.new_amount < 0, abs(ps.new_amount), 0) as to_produce_cust,
         ps.*
-    from product_storage ps;";
+    from product_storage ps";
 
     $production_plan = $conn->query($production_plan_sql);
 
     // echo json_encode($production_plan->fetch_all(MYSQLI_ASSOC));
+    // print_r($production_plan_sql);
+    // exit(0);
 
     foreach ($production_plan as $row) {
         $to_send = $row['to_send'];
@@ -70,18 +116,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // reserve the amount in the storage
             $conn->query("INSERT INTO storage_logs (product_id, storage_id, order_id, amount, detail) 
-            VALUES ($product_id, 1, $order_id, $to_send, 'RESERVED')
+            VALUES ($product_id, 1, $order_id, -$to_send, 'RESERVED')
             ");
         }
         if ($to_produce_store > 0) {
             $conn->query("INSERT INTO 
-            production_plan (product_id, amount, order_id, status, priority) 
-            VALUES ($product_id, $to_produce_store, $order_id, 'PENDING', 'LOW')");
+            production_plan (product_id, amount, order_id, status, priority, target) 
+            VALUES ($product_id, $to_produce_store, $order_id, 'PENDING', 'LOW', 'STORAGE')");
         }
         if ($to_produce_cust > 0) {
             $conn->query("INSERT INTO 
-        production_plan (product_id, amount, order_id, status, priority) 
-        VALUES ($product_id, $to_produce_cust, $order_id, 'PENDING', 'MEDIUM')");
+        production_plan (product_id, amount, order_id, status, priority, target) 
+        VALUES ($product_id, $to_produce_cust, $order_id, 'PENDING', 'MEDIUM', 'CUSTOMER')");
         }
 
         // $conn->query("UPDATE products SET storage_amount = storage_amount - $to_send WHERE id = $product_id");
