@@ -30,8 +30,8 @@
             <a href="prod/2">production 2</a>
             <a href="prod/3">production 3</a>
         </li>
-		<li><a href="localholst/mgmt">Management</a></li>
-		
+        <li><a href="management">Management</a></li>
+
     </ul>
 </body>
 
