@@ -52,7 +52,7 @@
         left join products p on sl.product_id = p.id
         left join orders o on sl.order_id = o.id
         left join customers c on o.customer_id = c.id
-        left join addresses a on c.address_id = a.address_id
+        left join addresses a on c.address_id = a.id
         order by sl.detail asc, sl.created_at asc;
     "
     );

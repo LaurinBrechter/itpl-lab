@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Ceckout</title>
     <style>
         <?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; ?>
     </style>
@@ -32,6 +32,7 @@
 
     $customers = $conn->query("SELECT * FROM customers;");
     // select button for customer
+    echo "<label for='customer-id'>Customer:</label>";
     echo "<select id='customer-id'>";
     while ($row = $customers->fetch_assoc()) {
         echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
