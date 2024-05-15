@@ -57,32 +57,65 @@ INSERT INTO `customers` (`id`, `name`, `address_id`, `telephone_number`, `isVip`
 	(23, 'Charlotte Harris', 27, '+491237777777', 0),
 	(24, 'William Clark', 28, '+491236666666', 1);
 
-INSERT INTO `service_partners` (`id`, `name`, `tax_number`, `address_id`, `isInternal`, `username`) VALUES
-	(1, 'TechnikService24', '987654321', 7, 0, 'TechnikService24'),
-	(2, 'ReparaturProfi', '876543219', 8, 0, 'ReparaturProfi'),
-	(3, 'Borat Sagdiyev', '', 31, 1, 'borat'),
-	(4, 'Adam Sandler', '', 31, 1, 'adam'),
-	(5, 'Johnny Smart', '', 31, 1, 'johnny'),
-	(6, 'GadgetSOS GmbH', 'DE374638306', 20, 0, 'gadgetsos'),
-	(7, 'Innovative Reparaturen GmbH', 'DE274638305', 19, 0, 'innovative'),
-	(8, 'ElektronikFix GmbH', 'DE123456789', 1, 0, 'elektronikfix'),
-	(9, 'TechSupport Plus', 'DE987654321', 2, 0, 'techsupport'),
-	(10, 'ReparaturMeister GmbH', 'DE192837465', 3, 0, 'reparaturmeister'),
-	(11, 'HausTechnik Solutions', 'DE564738291', 4, 0, 'haustechnik'),
-	(12, 'ComputerHilfe Schnell', 'DE665738291', 5, 0, 'computerhilfe'),
-	(13, 'HandyReparatur Blitz', 'DE764738292', 6, 0, 'handyreparatur'),
-	(14, 'GadgetRepair KG', 'DE864738293', 7, 0, 'gadgetrepair'),
-	(15, 'ServicePlus AG', 'DE964738294', 8, 0, 'serviceplus'),
-	(16, 'TechnologieHilfe GmbH', 'DE174738295', 9, 0, 'technologiehilfe'),
-	(17, 'MobileAssist GmbH', 'DE274738296', 10, 0, 'mobileassist'),
-	(18, 'ElektroProfi24', 'DE374738297', 11, 0, 'elektroprofi'),
-	(19, 'SmartHome Reparaturen', 'DE474738298', 12, 0, 'smarthome'),
-	(20, 'ITSupport 360', 'DE574738299', 13, 0, 'itsupport'),
-	(21, 'GeräteService 24/7', 'DE674738300', 14, 0, 'gerateservice'),
-	(22, 'NetzwerkProfis GmbH', 'DE774738301', 15, 0, 'netzwerkprofis'),
-	(23, 'PCReparatur Zentrum', 'DE874738302', 16, 0, 'pcreparatur'),
-	(24, 'TechnikSupport Team', 'DE974738303', 17, 0, 'techniksupport'),
-	(25, 'Elektro Notdienst', 'DE174638304', 18, 0, 'elektronotdienst');
+INSERT INTO `service_partners` (`id`, `name`, `tax_number`, `address_id`, `isInternal`, user_id) VALUES
+    (1, 'TechnikService24', '987654321', 7, 0, 1),
+    (2, 'ReparaturProfi', '876543219', 8, 0, 2),
+    (3, 'Borat Sagdiyev', '', 31, 1, 3),
+    (4, 'Adam Sandler', '', 31, 1, 4),
+    (5, 'Johnny Smart', '', 31, 1, 5),
+    (6, 'GadgetSOS GmbH', 'DE374638306', 20, 0, 6),
+    (7, 'Innovative Reparaturen GmbH', 'DE274638305', 19, 0, 7),
+    (8, 'ElektronikFix GmbH', 'DE123456789', 1, 0, 8),
+    (9, 'TechSupport Plus', 'DE987654321', 2, 0, 9),
+    (10, 'ReparaturMeister GmbH', 'DE192837465', 3, 0, 10),
+    (11, 'HausTechnik Solutions', 'DE564738291', 4, 0, 11),
+    (12, 'ComputerHilfe Schnell', 'DE665738291', 5, 0, 12),
+    (13, 'HandyReparatur Blitz', 'DE764738292', 6, 0, 13),
+    (14, 'GadgetRepair KG', 'DE864738293', 7, 0, 14),
+    (15, 'ServicePlus AG', 'DE964738294', 8, 0, 15),
+    (16, 'TechnologieHilfe GmbH', 'DE174738295', 9, 0, 16),
+    (17, 'MobileAssist GmbH', 'DE274738296', 10, 0, 17),
+    (18, 'ElektroProfi24', 'DE374738297', 11, 0, 18),
+    (19, 'SmartHome Reparaturen', 'DE474738298', 12, 0, 19),
+    (20, 'ITSupport 360', 'DE574738299', 13, 0, 20),
+    (21, 'GeräteService 24/7', 'DE674738300', 14, 0, 21),
+    (22, 'NetzwerkProfis GmbH', 'DE774738301', 15, 0, 22),
+    (23, 'PCReparatur Zentrum', 'DE874738302', 16, 0, 23),
+    (24, 'TechnikSupport Team', 'DE974738303', 17, 0, 24),
+    (25, 'Elektro Notdienst', 'DE174638304', 18, 0, 25);
+
+
+INSERT INTO users (id, username, password, role) VALUES
+    (1, 'TechnikService24', null, 'SERVICE_PARTNER'),
+    (2, 'ReparaturProfi', null, 'SERVICE_PARTNER'),
+    (3, 'borat', null, 'SERVICE_PARTNER'),
+    (4, 'adam', null, 'SERVICE_PARTNER'),
+    (5, 'johnny', null, 'SERVICE_PARTNER'),
+    (6, 'gadgetsos', null, 'SERVICE_PARTNER'),
+    (7, 'innovative', null, 'SERVICE_PARTNER'),
+    (8, 'elektronikfix', null, 'SERVICE_PARTNER'),
+    (9, 'techsupport', null, 'SERVICE_PARTNER'),
+    (10, 'reparaturmeister', null, 'SERVICE_PARTNER'),
+    (11, 'haustechnik', null, 'SERVICE_PARTNER'),
+    (12, 'computerhilfe', null, 'SERVICE_PARTNER'),
+    (13, 'handyreparatur', null, 'SERVICE_PARTNER'),
+    (14, 'gadgetrepair', null, 'SERVICE_PARTNER'),
+    (15, 'serviceplus', null, 'SERVICE_PARTNER'),
+    (16, 'technologiehilfe', null, 'SERVICE_PARTNER'),
+    (17, 'mobileassist', null, 'SERVICE_PARTNER'),
+    (18, 'elektroprofi', null, 'SERVICE_PARTNER'),
+    (19, 'smarthome', null, 'SERVICE_PARTNER'),
+    (20, 'itsupport', null, 'SERVICE_PARTNER'),
+    (21, 'gerateservice', null, 'SERVICE_PARTNER'),
+    (22, 'netzwerkprofis', null, 'SERVICE_PARTNER'),
+    (23, 'pcreparatur', null, 'SERVICE_PARTNER'),
+    (24, 'techniksupport', null, 'SERVICE_PARTNER'),
+    (25, 'elektronotdienst', null, 'SERVICE_PARTNER'),
+    (26, 'storage1', null, 'STORAGE'),
+    (27, 'storage2', null, 'STORAGE'),
+    (28, 'production1', null, 'PRODUCTION'),
+    (29, 'production2', null, 'PRODUCTION');
+	
 
 
 INSERT INTO `orders` (`id`, `priority`, `sp_id`, `customer_id`, `status`, `created_at`) VALUES
@@ -143,9 +176,9 @@ INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `amount`, `created_at
 	(35, 18, 34, 2, '2024-05-09 13:05:00'),
 	(36, 18, 35, 2, '2024-05-09 13:05:05');
 
-INSERT INTO `production_facilities` (`production_facility_id`, `address_id`) VALUES
-	(1, 29),
-	(2, 30);
+INSERT INTO `production_facilities` (`id`, `address_id`, user_id) VALUES
+	(1, 29, 28),
+	(2, 30, 29);
 
 INSERT INTO `products` (`name`, `price`, `production_duration`, `description`, `created_at`, `storage_amount`) VALUES
 	('Premium Smartphone', 599.99, 2, 'High-end smartphone with cutting-edge features.', '2024-05-07 15:30:01', 44),
@@ -297,7 +330,7 @@ VALUES
 UPDATE storage_logs SET storage_id = FLOOR(RAND() * 2) + 1;
 
 
-INSERT INTO `storage_facilities` (`id`, `address_id`) VALUES
-	(1, 7),
-	(2, 8);
+INSERT INTO `storage_facilities` (`id`, `address_id`, user_id) VALUES
+	(1, 7, 26),
+	(2, 8, 27);
 

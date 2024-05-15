@@ -8,6 +8,14 @@ CREATE TABLE IF NOT EXISTS addresses (
   country varchar(50) NOT NULL
 );
 
+CREATE TABLE users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50),
+    password VARCHAR(50),
+    role ENUM('SERVICE_PARTNER', 'STORAGE', 'PRODUCTION'),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255),
@@ -33,8 +41,7 @@ CREATE TABLE IF NOT EXISTS service_partners (
   address_id int(11),
   isInternal tinyint(1),
   KEY address_id (address_id),
-  username varchar(50),
-  password varchar(50),
+  user_id int(11),
   CONSTRAINT address_id FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
@@ -77,13 +84,15 @@ CREATE TABLE production_plan (
     order_id INT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     priority ENUM('LOW', 'MEDIUM', 'HIGH'),
-    target ENUM('STORAGE', 'CUSTOMER')
+    target ENUM('STORAGE', 'CUSTOMER'),
+    facility_id INT,
 );
 
 CREATE TABLE IF NOT EXISTS storage_facilities (
   id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   address_id int(11) NOT NULL,
   KEY address_id3 (address_id),
+  user_id int(11),
   CONSTRAINT address_id3 FOREIGN KEY (address_id) REFERENCES addresses (id) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
 
@@ -91,5 +100,6 @@ CREATE TABLE IF NOT EXISTS production_facilities (
   id int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
   address_id int(11) NOT NULL,
   KEY `address_id 4` (`address_id`),
+  user_id int(11),
   CONSTRAINT `address_id 4` FOREIGN KEY (`address_id`) REFERENCES `addresses` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
