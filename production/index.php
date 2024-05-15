@@ -1,20 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Production</title>
-    <style>
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; ?>
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-</head>
+<?php
+$title = "Production";
+$req_jquery = true;
+include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
+?>
 
 <body>
     <?php
 
-    include $_SERVER['DOCUMENT_ROOT'] . '/prod/prod_navbar.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/production/prod_navbar.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/decode_jwt.php';
 

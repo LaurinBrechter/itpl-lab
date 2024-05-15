@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Storage</title>
-    <style>
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; ?>
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-</head>
+<?php
+$title = "Storage";
+$req_jquery = true;
+include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
+?>
 
 <body>
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/storage/storage_navbar.php'; ?>

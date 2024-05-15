@@ -4,47 +4,19 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
 
 
 <body>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php'; ?>
+    <form>
+        <label for="sku">Search for a Product</label>
+        <input type="text" id="sku-search" name="sku">
+        <button type="submit">Search</button>
+    </form>
     <?php
 
-    include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/decode_jwt.php';
 
     $payload = getJwtPayload($_COOKIE["jwt"], 'SERVICE_PARTNER');
 
-
-    // $jwt = $_COOKIE["jwt"];
-    
-    // if (empty($jwt)) {
-    //     header("Location: /login");
-    // }
-    
-    // // decode jwt
-    // $jwt = explode(".", $jwt);
-    // $payload = base64_decode($jwt[1]);
-    // $payload = json_decode($payload);
-    // if (isset($payload->role)) {
-    //     $role = $payload->role;
-    // } else {
-    //     header("Location: /login");
-    //     // handle the invalid JWT or missing 'sp_id' key scenario
-    // }
-    
-    // $sql = "SELECT * FROM service_partners where id = $sp_id;";
-    // $result = $conn->query($sql);
-    // if ($result->num_rows > 0) {
-    //     $row = $result->fetch_assoc();
-    // } else {
-    //     echo "0 results";
-    // }
-    
-
-    echo '<form>
-        <label for="sku">Search for a Product</label>
-        <input type="text" id="sku-search" name="sku">
-        <button type="submit">Search</button>
-        <div>Welcome, ' . "TODO" . '</div>
-    </form>';
     ?>
     <div class="table-container">
         <?php
