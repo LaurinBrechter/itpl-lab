@@ -10,21 +10,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Perform the database query to verify the password
     // Replace 'your_table_name' with the actual table name in your database
-    $query = "SELECT * FROM service_partners WHERE username = '$username'";
+    $query = "SELECT * FROM users WHERE username = '$username'";
     $res = $conn->query($query);
-    $service_partner = $res->fetch_assoc();
+    $user = $res->fetch_assoc();
 
     $jwt_header = json_encode(['typ' => 'JWT', 'alg' => 'HS256']);
     $base64UrlHeader = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($jwt_header));
 
 
     // Verify the password
-    if ($service_partner && password_verify($password, crypt("test", "123"))) {
+    if ($user && password_verify($password, crypt("test", "123"))) {
         // Password is correct, generate a JWT token
         // Replace 'your_secret_key' with a secret key for JWT token generation
         $jwt_payload = [
-            'sp_id' => $service_partner['id'],
-            'exp' => time() + 3600 // Token expiration time (1 hour)
+            'user_id' => $user['id'],
+            'exp' => time() + 3600, // Token expiration time (1 hour)
+            'role' => $user['role']
         ];
         $payload_enc = json_encode($jwt_payload);
         $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload_enc));
@@ -33,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $jwt = $base64UrlHeader . "." . $base64UrlPayload . "." . $base64UrlSignature;
 
         // Return the JWT token as the response
-        echo json_encode(['token' => $jwt, 'success' => true]);
+        echo json_encode(['token' => $jwt, 'success' => true, 'role' => $user['role']]);
     } else {
         // Invalid username or password
         echo json_encode(['error' => 'Invalid username or password', 'success' => false]);

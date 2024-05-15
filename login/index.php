@@ -1,5 +1,3 @@
-username: username,
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -46,8 +44,14 @@ username: username,
                 if (res.success) {
                     // save jwt to cookies
                     document.cookie = "jwt=" + res.token + "; path=/";
-                    // redirect to catalog
-                    window.location.href = '/sp/catalog';
+
+                    if (res.role == 'SERVICE_PARTNER') {
+                        window.location.href = '/sp/catalog';
+                    } else if (res.role === 'STORAGE') {
+                        window.location.href = '/storage';
+                    } else if (res.role === 'PRODUCTION') {
+                        window.location.href = '/production';
+                    }
                 } else {
                     alert("Wrong username or password. Please try again.");
                 }
