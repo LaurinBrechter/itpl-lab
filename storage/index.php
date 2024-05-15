@@ -16,21 +16,11 @@
     <?php
 
     include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/decode_jwt.php';
 
-    $request_uri = $_SERVER['REQUEST_URI'];
+    $payload = getJwtPayload($_COOKIE["jwt"], 'STORAGE');
 
-    // Remove any query parameters
-    $url_parts = explode('?', $request_uri);
-    $url = rtrim($url_parts[0], '/');
-
-    // Split the URL into segments
-    $segments = explode('/', $url);
-
-    // The first segment is usually the controller or resource
-    $controller = !empty($segments[0]) ? $segments[0] : 'home';
-
-    // The second segment might be the action or an identifier
-    $action_or_id = !empty($segments[1]) ? $segments[1] : '';
+    $storage_id = $conn->query("select * from storage_facilities where user_id = $payload->user_id;")->fetch_assoc()["id"];
 
     // check for post request
     
@@ -47,8 +37,8 @@
             CONCAT(a.street, ', ', a.house_number, ', ', a.city, ', ', a.zip, ', ', a.country) as address 
         FROM (   
             SELECT * 
-            FROM test_db.storage_logs 
-            where storage_id = $segments[2] ) as sl
+            FROM storage_logs 
+            where storage_id = $storage_id ) as sl
         left join products p on sl.product_id = p.id
         left join orders o on sl.order_id = o.id
         left join customers c on o.customer_id = c.id
@@ -64,10 +54,10 @@
     ?>
 
     <!-- <form id="storage_movement_form" onsubmit="event.preventDefault();"> -->
-    <!-- <?php echo $segments[2] ?> -->
+    <!-- <?php echo $storage_id ?> -->
     <form id="storage_movement_form" onsubmit="event.preventDefault()">
         <h3>Storage Movement</h3>
-        <input type="hidden" name="storage_id" value="<?php echo $segments[2] ?>">
+        <input type="hidden" name="storage_id" value="<?php echo $storage_id ?>">
         <label for="order-id">order-id</label>
         <select id="order-id" name="order_id">
             <?php
