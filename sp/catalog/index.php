@@ -1,4 +1,6 @@
 <?php
+$title = "Catalog";
+$req_jquery = false;
 include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
 ?>
 
@@ -60,7 +62,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
                 // echo "<input type='number' id='quantity' name='quantity'>";
                 // echo "</td>";
                 echo "<td>1 week</td>";
-                echo "<td><a href='/sp/catalog/product/$sku'>Details</a></td>";
+                echo "<td><a href='/sp/catalog/product?id=$sku'>Details</a></td>";
                 echo "</tr>";
             }
             echo "</tbody>";

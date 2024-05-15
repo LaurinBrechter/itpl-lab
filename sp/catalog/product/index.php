@@ -7,29 +7,31 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php'; ?>
     <?php
 
-    $request_uri = $_SERVER['REQUEST_URI'];
-
-    // Remove any query parameters
-    $url_parts = explode('?', $request_uri);
-    $url = rtrim($url_parts[0], '/');
-
-    // Split the URL into segments
-    $segments = explode('/', $url);
-
-    // The first segment is usually the controller or resource
-    $controller = !empty($segments[0]) ? $segments[0] : 'home';
-
-    // The second segment might be the action or an identifier
-    $action_or_id = !empty($segments[1]) ? $segments[1] : '';
-
-    $product_id = $segments[4];
-
     include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
 
-    $sql = "SELECT * FROM products WHERE id = $product_id";
+    $product_id = $_GET["id"];
+    $sql = "SELECT * FROM products WHERE id = $product_id;";
 
-    $storage_logs = $conn->query($sql);
-    $row = $storage_logs->fetch_assoc();
+    // check if product_id is an int
+    if (!is_numeric($product_id)) {
+        echo "<div class='error-message'>";
+        echo "<h1>Invalid product id</h1>";
+        echo "<p>Product id must be a number</p>";
+        echo "</div>";
+        die();
+    }
+
+    $product = $conn->query($sql);
+    $row = $product->fetch_assoc();
+
+    // check for results
+    if ($product->num_rows === 0) {
+        echo "<div class='error-message'>";
+        echo "<h1>Product not found</h1>";
+        echo "<p>Product with id $product_id not found</p>";
+        echo "</div>";
+        die();
+    }
 
     echo "<h1>" . $row['name'] . "</h1>";
     echo "<p>" . $row['description'] . "</p>";
