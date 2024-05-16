@@ -82,8 +82,17 @@ input[type=number] {
     display: flex;
     flex-direction: row;
     align-items: center;
-    background-color: #394555;
+    background-color: #00142d;
     margin: 0;
+}
+
+/* Füge das Logo als Hintergrundbild hinzu */
+.navbar .logo {
+    background-image: url('/Firefly 20240508165455.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 70px; /* Höhe des Logos */
+    width: 100px; /* Breite des Logos, anpassen nach Bedarf */
 }
 
 .navbar h1 {

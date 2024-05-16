@@ -12,7 +12,8 @@
 </head>
 
 <body>
-	<?php include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php'; ?>
+	<?php	include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
+			include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php'; ?>
     <h1>Neuen Servicepartner hinzufügen</h1>
     <form action="Management/add_servicepartner.php" method="post">
         <label for="name">Name:</label>

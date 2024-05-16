@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <title>Übersicht der Daten</title>
     <style>
-	<?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; ?>
+	<?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; 
+	include $_SERVER['DOCUMENT_ROOT'] . '/database.php';?>
         table {
             width: 100%;
             border-collapse: collapse;
