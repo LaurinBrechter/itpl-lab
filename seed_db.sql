@@ -115,6 +115,8 @@ INSERT INTO users (id, username, password, role) VALUES
     (27, 'storage2', null, 'STORAGE'),
     (28, 'production1', null, 'PRODUCTION'),
     (29, 'production2', null, 'PRODUCTION');
+	(30, 'Manager', NULL, 'MANAGEMENT');
+
 	
 
 
