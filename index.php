@@ -1,38 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <!-- <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
-        rel="stylesheet"> -->
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-    <style>
-        <?php include 'style.css'; ?>
-    </style>
-</head>
+<?php
+$title = "Login";
+$req_jquery = true;
+include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
+?>
 
 <body>
-    Welcome Back!
-    <ul>
-        <li><a href="sp/catalog/index.php">Service Partner</a></li>
-        <li>
-            <a href="storage/1">Storage 1</a>
-            <a href="storage/2">Storage 2</a>
-            <a href="storage/3">Storage 3</a>
-        </li>
-        <li>
-            <a href="prod/1">production 1</a>
-            <a href="prod/2">production 2</a>
-            <a href="prod/3">production 3</a>
-        </li>
-        <li><a href="management">Management</a></li>
+    <h1>Login</h1>
+    <form action="login.php" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br><br>
 
-    </ul>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <input type="submit" value="Login">
+    </form>
 </body>
+
+<script>
+    $(document).ready(function () {
+        $('form').submit(function (event) {
+            event.preventDefault();
+            var username = $('#username').val();
+            var password = $('#password').val();
+
+            $.post('/server/login.php', {
+                username: username,
+                password: password
+            }, function (data) {
+
+                // read json
+
+                res = JSON.parse(data);
+                console.log(res)
+                if (res.success) {
+                    // save jwt to cookies
+                    document.cookie = "jwt=" + res.token + "; path=/";
+
+                    if (res.role == 'SERVICE_PARTNER') {
+                        window.location.href = '/sp/catalog';
+                    } else if (res.role === 'STORAGE') {
+                        window.location.href = '/storage';
+                    } else if (res.role === 'PRODUCTION') {
+                        window.location.href = '/production';
+                    }
+                } else {
+                    alert("Wrong username or password. Please try again.");
+                }
+            });
+        });
+    });
+</script>
 
 </html>
