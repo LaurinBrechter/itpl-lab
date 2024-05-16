@@ -7,11 +7,10 @@ body {
     height: 100vh;
 }
 
-
-
 table {
     border-collapse: collapse;
     font-family: Tahoma, Geneva, sans-serif;
+	width: 100%;
 }
 
 table td {
@@ -24,13 +23,16 @@ table td {
 }
 
 table thead th {
-    background-color: #54585d;
+    background-color: #f2f2f2;
     color: #ffffff;
     font-weight: bold;
     font-size: 13px;
     border: 1px solid #54585d;
     position: sticky;
     top: 0;
+	border: 1px solid black;
+    padding: 8px;
+    text-align: left;
 }
 
 table tbody td {
@@ -86,13 +88,12 @@ input[type=number] {
     margin: 0;
 }
 
-/* Füge das Logo als Hintergrundbild hinzu */
 .navbar .logo {
     background-image: url('/Firefly 20240508165455.png');
     background-size: contain;
     background-repeat: no-repeat;
-    height: 70px; /* Höhe des Logos */
-    width: 100px; /* Breite des Logos, anpassen nach Bedarf */
+    height: 70px; 
+    width: 100px; 
 }
 
 .navbar h1 {
