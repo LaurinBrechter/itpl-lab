@@ -41,7 +41,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
             echo "<table class='catalog-table'>";
             echo "<thead>";
             echo "<tr>";
-            echo "<th>name</th>";
+            echo "<th>Name</th>";
             echo "<th>Price</th>";
             echo "<th>Quantity Available</th>";
             // echo "<th>Order</th>";
