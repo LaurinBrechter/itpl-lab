@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <title>Übersicht der Daten</title>
     <style>
-	<?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; 
-	include $_SERVER['DOCUMENT_ROOT'] . '/database.php';?>
+        <?php
+        include $_SERVER['DOCUMENT_ROOT'] . '/style.css';
+        ?>
         table {
             width: 100%;
             border-collapse: collapse;
@@ -21,7 +22,8 @@
     </style>
 </head>
 <body>
-	<?php include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php'; 
+	include $_SERVER['DOCUMENT_ROOT'] . '/database.php';?>
     <h1>Übersicht der Kunden und Servicepartner</h1>
 
     <h2>Kunden</h2>
@@ -34,14 +36,10 @@
             <th>Aktionen</th>
         </tr>
         <?php
-        // Verbindung zur Datenbank herstellen
-        $conn = new mysqli("localhost", "your_username", "your_password", "your_database_name");
-        if ($conn->connect_error) {
-            die("Verbindung fehlgeschlagen: " . $conn->connect_error);
-        }
-
-        // Kunden abfragen
-        $sql = "SELECT customers.customer_id, customers.name, addresses.street, customers.telephone_number, customers.isVip FROM customers JOIN addresses ON customers.address_id = addresses.address_id";
+// Kunden abfragen
+        $sql = "SELECT customers.id AS customer_id, customers.name, addresses.street, addresses.house_number, addresses.city, customers.telephone_number, customers.isVip 
+                FROM customers 
+                LEFT JOIN addresses ON customers.address_id = addresses.id";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
@@ -49,7 +47,7 @@
             while($row = $result->fetch_assoc()) {
                 echo "<tr>
                         <td>" . $row["name"] . "</td>
-                        <td>" . $row["street"] . "</td>
+                        <td>" . $row["street"] . " " . $row["house_number"] . ", " . $row["city"] . "</td>
                         <td>" . $row["telephone_number"] . "</td>
                         <td>" . ($row["isVip"] ? 'Ja' : 'Nein') . "</td>
                         <td><a href='edit_customer.php?id=" . $row["customer_id"] . "'>Bearbeiten</a></td>
@@ -59,6 +57,7 @@
             echo "<tr><td colspan='5'>Keine Daten gefunden</td></tr>";
         }
         ?>
+
     </table>
 
     <h2>Servicepartner</h2>
@@ -72,7 +71,9 @@
         </tr>
         <?php
         // Servicepartner abfragen
-        $sql = "SELECT servicepartners.sp_id, servicepartners.name, servicepartners.tax_number, addresses.street, servicepartners.isInternal FROM servicepartners JOIN addresses ON servicepartners.address_id = addresses.address_id";
+        $sql = "SELECT service_partners.id AS sp_id, service_partners.name, service_partners.tax_number, addresses.street, addresses.house_number, addresses.city, service_partners.isInternal 
+                FROM service_partners 
+                LEFT JOIN addresses ON service_partners.address_id = addresses.id";
         $result = $conn->query($sql);
 
         if ($result->num_rows > 0) {
@@ -81,7 +82,7 @@
                 echo "<tr>
                         <td>" . $row["name"] . "</td>
                         <td>" . $row["tax_number"] . "</td>
-                        <td>" . $row["street"] . "</td>
+                        <td>" . $row["street"] . " " . $row["house_number"] . ", " . $row["city"] . "</td>
                         <td>" . ($row["isInternal"] ? 'Ja' : 'Nein') . "</td>
                         <td><a href='edit_servicepartner.php?id=" . $row["sp_id"] . "'>Bearbeiten</a></td>
                       </tr>";
