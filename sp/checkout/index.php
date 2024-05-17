@@ -6,7 +6,22 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
 
 
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php'; ?>
+    <?php
+    include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/decode_jwt.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
+
+    $payload = getJwtPayload($_COOKIE["jwt"], 'SERVICE_PARTNER');
+
+    $user_id = $payload->user_id;
+    echo $user_id;
+    $sp_id = $conn->query("SELECT * FROM service_partners WHERE user_id = $user_id;")->fetch_assoc()['id'];
+
+    if ($sp_id == null) {
+        echo "No service partner found for user_id $user_id";
+        exit();
+    }
+    ?>
 
 
     <h1>Checkout</h1>
@@ -20,20 +35,20 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
         <tbody id="checkout-items">
         </tbody>
     </table>
-    <button id="buy-btn">Buy</button>
-    <?php
-    include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
-
-    $customers = $conn->query("SELECT * FROM customers;");
-    // select button for customer
-    echo "<label for='customer-id'>Customer:</label>";
-    echo "<select id='customer-id'>";
-    while ($row = $customers->fetch_assoc()) {
-        echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
-    }
-    echo "</select>";
-
-    ?>
+    <form id="checkout-form" onsubmit="event.preventDefault()">
+        <button id="buy-btn">Buy</button>
+        <?php
+        $customers = $conn->query("SELECT * FROM customers;");
+        // select button for customer
+        echo "<label for='customer-id'>Customer:</label>";
+        echo "<select id='customer-id'>";
+        while ($row = $customers->fetch_assoc()) {
+            echo "<option value='" . $row['id'] . "'>" . $row['name'] . "</option>";
+        }
+        echo "</select>";
+        ?>
+        <input type="hidden" id="sp-id" name="sp-id" value="<?php echo $sp_id ?>">
+    </form>
 
 </body>
 
@@ -75,8 +90,8 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
 
         req_body = {
             'items': existingItems,
-            'sp_id': 1,
-            'customer_id': 1 //$('#customer-id').val()
+            'sp_id': $("#sp-id").val(),
+            'customer_id': $('#customer-id').val()
         }
 
         console.log(req_body)

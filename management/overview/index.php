@@ -7,7 +7,7 @@
         <?php
         include $_SERVER['DOCUMENT_ROOT'] . '/style.css';
         ?>
-        table {
+        /* table {
             width: 100%;
             border-collapse: collapse;
         }
@@ -18,7 +18,7 @@
         }
         th {
             background-color: #f2f2f2;
-        }
+        } */
     </style>
 </head>
 <body>
@@ -27,7 +27,9 @@
     <h1>Übersicht der Kunden und Servicepartner</h1>
 
     <h2>Kunden</h2>
+    <div class="table-container">
     <table>
+        <thead>
         <tr>
             <th>Name</th>
             <th>Adresse</th>
@@ -35,6 +37,8 @@
             <th>VIP Status</th>
             <th>Aktionen</th>
         </tr>
+        </thead>
+        <tbody>
         <?php
 // Kunden abfragen
         $sql = "SELECT customers.id AS customer_id, customers.name, addresses.street, addresses.house_number, addresses.city, customers.telephone_number, customers.isVip 
@@ -57,11 +61,14 @@
             echo "<tr><td colspan='5'>Keine Daten gefunden</td></tr>";
         }
         ?>
-
+        </tbody>
     </table>
+    </div>
 
     <h2>Servicepartner</h2>
+    <div class="table-container">
     <table>
+        <thead>
         <tr>
             <th>Name</th>
             <th>Steuernummer</th>
@@ -69,6 +76,8 @@
             <th>Intern</th>
             <th>Aktionen</th>
         </tr>
+        </thead>
+        <tbody>
         <?php
         // Servicepartner abfragen
         $sql = "SELECT service_partners.id AS sp_id, service_partners.name, service_partners.tax_number, addresses.street, addresses.house_number, addresses.city, service_partners.isInternal 
@@ -92,6 +101,8 @@
         }
         $conn->close();
         ?>
+        </tbody>
     </table>
+    </div>
 </body>
 </html>
