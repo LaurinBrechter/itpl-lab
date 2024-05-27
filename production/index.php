@@ -1,15 +1,15 @@
 <?php
 $title = "Production";
 $req_jquery = true;
-include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
 
 <body>
     <?php
 
     include $_SERVER['DOCUMENT_ROOT'] . '/production/prod_navbar.php';
-    include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
-    include $_SERVER['DOCUMENT_ROOT'] . '/decode_jwt.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
 
     $payload = getJwtPayload($_COOKIE["jwt"], 'PRODUCTION');
 
@@ -106,5 +106,17 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
     });
 </script>
 
+
+<script>
+    var conn = new WebSocket('ws://localhost:8080');
+    conn.onopen = function (e) {
+        console.log("Connection established!");
+    };
+
+    conn.onmessage = function (e) {
+        // console.log(e.data);
+        location.reload();
+    };
+</script>
 
 </html>

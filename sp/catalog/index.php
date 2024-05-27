@@ -1,7 +1,7 @@
 <?php
 $title = "Catalog";
 $req_jquery = false;
-include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
 
 
@@ -14,17 +14,14 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
     </form>
     <?php
 
-    include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
-    include $_SERVER['DOCUMENT_ROOT'] . '/decode_jwt.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
 
     $payload = getJwtPayload($_COOKIE["jwt"], 'SERVICE_PARTNER');
 
     ?>
     <div class="table-container">
         <?php
-
-
-
         $search_term = $_GET["sku"];
 
         if (empty($search_term)) {
@@ -35,9 +32,9 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
 
         // echo $sql;
         
-        $storage_logs = $conn->query($sql);
+        $products = $conn->query($sql);
 
-        if ($storage_logs->num_rows > 0) {
+        if ($products->num_rows > 0) {
             echo "<table class='catalog-table'>";
             echo "<thead>";
             echo "<tr>";
@@ -50,7 +47,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
             echo "</tr>";
             echo "</thead>";
             echo "<tbody>";
-            while ($row = $storage_logs->fetch_assoc()) {
+            while ($row = $products->fetch_assoc()) {
                 $sku = $row["id"];
 
                 echo "<tr>";
@@ -73,13 +70,6 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
 
         ?>
     </div>
-    <!-- <form>
-        <label for="sku">SKU</label>
-        <input type="text" id="sku" name="sku">
-        <label for="quantity">Quantity</label>
-        <input type="number" id="quantity" name="quantity">
-        <button type="submit">Order</button>
-    </form> -->
 </body>
 
 </html>

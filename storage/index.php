@@ -1,15 +1,23 @@
 <?php
 $title = "Storage";
 $req_jquery = true;
-include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
 
 <body>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/server/notification.php';
+
+    renderNotification("Thank You!", "success")
+
+        ?>
+
+
+
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/storage/storage_navbar.php'; ?>
     <?php
 
-    include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
-    include $_SERVER['DOCUMENT_ROOT'] . '/decode_jwt.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
 
     $payload = getJwtPayload($_COOKIE["jwt"], 'STORAGE');
 

@@ -1,9 +1,9 @@
 <?php
 $title = "Login";
 $req_jquery = true;
-include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
-    
+
 <body>
     <h1>Login</h1>
     <form action="login.php" method="POST">
@@ -43,7 +43,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
                         window.location.href = '/storage';
                     } else if (res.role === 'PRODUCTION') {
                         window.location.href = '/production';
-					} else if (res.role === 'MANAGEMENT') {
+                    } else if (res.role === 'MANAGEMENT') {
                         window.location.href = '/management';
                     }
                 } else {

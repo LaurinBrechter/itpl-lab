@@ -1,6 +1,6 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // $requestBody = file_get_contents('php://input');

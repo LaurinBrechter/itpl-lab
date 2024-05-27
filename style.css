@@ -91,8 +91,10 @@ input[type=number] {
     background-image: url('/Firefly 20240508165455.png');
     background-size: contain;
     background-repeat: no-repeat;
-    height: 70px; /* Höhe des Logos */
-    width: 100px; /* Breite des Logos, anpassen nach Bedarf */
+    height: 70px;
+    /* Höhe des Logos */
+    width: 100px;
+    /* Breite des Logos, anpassen nach Bedarf */
 }
 
 .navbar h1 {
@@ -147,4 +149,23 @@ form {
     width: 100%;
 }
 
-	
+.notification-container {
+    height: 100px;
+    width: 200px;
+    position: fixed;
+    bottom: 50px;
+    right: 50px;
+    background-color: #54585d;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+
+}
+
+.notification-close {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    color: white;
+    cursor: pointer;
+}

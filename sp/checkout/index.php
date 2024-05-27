@@ -1,15 +1,15 @@
 <?php
 $title = "Checkout";
 $req_jquery = true;
-include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
 
 
 <body>
     <?php
     include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
-    include $_SERVER['DOCUMENT_ROOT'] . '/decode_jwt.php';
-    include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
     $payload = getJwtPayload($_COOKIE["jwt"], 'SERVICE_PARTNER');
 

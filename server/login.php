@@ -1,7 +1,7 @@
 <?php
 
 // Assuming you have a database connection established
-include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 // Check if the request method is POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Get the username and password from the request

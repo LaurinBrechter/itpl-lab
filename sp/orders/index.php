@@ -1,14 +1,14 @@
 <?php
 $title = "Catalog";
 $req_jquery = false;
-include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
 
 
 <body>
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php'; ?>
 
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
     // TODO filter for sp_id in orders table
     $order_items = $conn->query("SELECT 

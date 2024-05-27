@@ -1,6 +1,7 @@
 <?php
 
-include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/send-message.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -49,21 +50,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $sql = "
     START TRANSACTION;
-    INSERT INTO orders (sp_id, status, customer_id, priority) 
+    INSERT INO orders (sp_id, status, customer_id, priority) 
     VALUES ($sp_id, 'PENDING', $customer_id, '$priority');
     SET @order_id = LAST_INSERT_ID();
     $sql_order_items;
     COMMIT;";
 
+    // echo $sql;
+
+
     $res = $conn->multi_query($sql);
+
+
 
 
     // Fetch all results of the multi-query
     do {
         if ($result = $conn->store_result()) {
+            // if (!$result) {
+            //     http_response_code(500);
+            //     echo "Couldn't create order";
+            // }
             $result->free();
         }
-    } while ($conn->more_results() && $conn->next_result());
+    } while
+    (
+        // $conn->more_results() &&
+        $conn->next_result()
+    );
+
+    exit(0);
+
 
     if ($conn->affected_rows === -1) {
         echo "Error: " . $conn->error;
@@ -98,10 +115,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $production_plan = $conn->query($production_plan_sql);
 
+    // check if query went through
+
+
+
     // echo json_encode($production_plan->fetch_all(MYSQLI_ASSOC));
     // print_r($production_plan_sql);
     // exit(0);
 
+    $isStorageOrder = false;
+    $isProductionOrder = false;
     foreach ($production_plan as $row) {
         $to_send = $row['to_send'];
         $to_produce_store = $row['to_produce_store'];
@@ -123,42 +146,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $conn->query("INSERT INTO 
             production_plan (product_id, amount, order_id, status, priority, target) 
             VALUES ($product_id, $to_produce_store, $order_id, 'PENDING', 'LOW', 'STORAGE')");
+            $isProductionOrder = true;
         }
         if ($to_produce_cust > 0) {
             $conn->query("INSERT INTO 
-        production_plan (product_id, amount, order_id, status, priority, target) 
-        VALUES ($product_id, $to_produce_cust, $order_id, 'PENDING', 'MEDIUM', 'CUSTOMER')");
+            production_plan (product_id, amount, order_id, status, priority, target) 
+            VALUES ($product_id, $to_produce_cust, $order_id, 'PENDING', 'MEDIUM', 'CUSTOMER')");
+            $isProductionOrder = true;
         }
-
-        // $conn->query("UPDATE products SET storage_amount = storage_amount - $to_send WHERE id = $product_id");
     }
 
-
-
-
-    // if ($customer["isVip"] == 1) {
-    //     $priority = "HIGH";
-    // } else {
-    //     $priority = "MEDIUM";
-    // }
-
-    // try {
-    //     $sql = "
-    //     START TRANSACTION;
-    //     INSERT INTO orders (sp_id, status, customer_id, priority) 
-    //     VALUES ($sp_id, 'PENDING', $customer_id, '$priority');
-    //     $sql_order_items;
-    //     COMMIT;";
-    //     $res = $conn->multi_query($sql);
-
-    //     if ($res) {
-    //         echo '{"success": true, "msg":' . $sql . '}';
-    //     } else {
-    //         throw new Exception("Error: " . $conn->error);
-    //     }
-    // } catch (Exception $e) {
-    //     $msg = $e->getMessage();
-    //     echo '{"success": false, "msg": "' . $msg . '"}';
-    // }
+    if ($isProductionOrder) {
+        sendMsg('{"success": true, "data": "Order placed and production planned"}');
+    }
 }
-// echo $_SERVER['REQUEST_METHOD'];

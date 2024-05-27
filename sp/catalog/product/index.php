@@ -1,5 +1,5 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
 
 
@@ -7,7 +7,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/document_head.php';
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php'; ?>
     <?php
 
-    include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
     $product_id = $_GET["id"];
     $sql = "SELECT * FROM products WHERE id = $product_id;";
