@@ -26,5 +26,10 @@ function getJwtPayload($jwt, $req_role)
         exit();
     }
 
+    if (time() > $payload->exp) {
+        header("Location: /login");
+        exit();
+    }
+
     return $payload;
 }
