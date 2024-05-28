@@ -3,13 +3,13 @@
 function getJwtPayload($jwt, $req_role)
 {
     if (!isset($jwt)) {
-        header("Location: /login");
+        header("Location: /");
         exit();
     }
 
     $jwtParts = explode(".", $jwt);
     if (count($jwtParts) < 2) {
-        header("Location: /login");
+        header("Location: /");
         exit();
     }
 
@@ -17,17 +17,17 @@ function getJwtPayload($jwt, $req_role)
     $payload = json_decode($payload);
 
     if (!isset($payload->role)) {
-        header("Location: /login");
+        header("Location: /");
         exit();
     }
 
     if ($payload->role !== $req_role) {
-        header("Location: /login");
+        header("Location: /");
         exit();
     }
 
     if (time() > $payload->exp) {
-        header("Location: /login");
+        header("Location: /");
         exit();
     }
 
