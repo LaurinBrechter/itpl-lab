@@ -23,7 +23,7 @@
 </head>
 <body>
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php'; 
-	include $_SERVER['DOCUMENT_ROOT'] . '/database.php';?>
+	include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';?>
     <h1>Übersicht der Kunden und Servicepartner</h1>
 
     <h2>Kunden</h2>

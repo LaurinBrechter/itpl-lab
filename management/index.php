@@ -12,10 +12,16 @@
 </head>
 
 <body>
-	<?php	include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
-			include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php';
+
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
+
+    $payload = getJwtPayload($_COOKIE["jwt"], 'MANAGEMENT');
+
+    ?>
     <h1>Neuen Servicepartner hinzufügen</h1>
-    <form action="Management/add_servicepartner.php" method="post">
+    <form action="management/add_servicepartner.php" method="post">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required><br><br>
         <label for="tax_number">Steuernummer:</label>
@@ -29,14 +35,14 @@
         <label for="state">Bundesland:</label>
         <input type="text" id="state" name="state"><br><br>
         <label for="zip">PLZ:</label>
-        <input type="text" id="zip" name="zip" required><br><br>
+        <input type="number" id="zip" name="zip" required><br><br>
         <label for="country">Land:</label>
         <input type="text" id="country" name="country" required><br><br>
-		<label for="isInternal">Zugehörigkeit:</label>
-		<select id="isInternal" name="isInternal" required>
-		<option value="1">Intern</option>
-		<option value="0" selected>Extern</option>
-		</select><br><br>
+        <label for="isInternal">Zugehörigkeit:</label>
+        <select id="isInternal" name="isInternal" required>
+            <option value="1">Intern</option>
+            <option value="0" selected>Extern</option>
+        </select><br><br>
         <input type="submit" value="Servicepartner hinzufügen">
     </form>
 
@@ -58,11 +64,11 @@
         <input type="text" id="country" name="country" required><br><br>
         <label for="telephone_number">Telefonnummer:</label>
         <input type="text" id="telephone_number" name="telephone_number"><br><br>
-      	<label for="isVip">VIP Status:</label>
-		<select id="isVip" name="isVip" required>
-		<option value="1">Ja</option>
-		<option value="0" selected>Nein</option>
-		</select><br><br>
+        <label for="isVip">VIP Status:</label>
+        <select id="isVip" name="isVip" required>
+            <option value="1">Ja</option>
+            <option value="0" selected>Nein</option>
+        </select><br><br>
         <input type="submit" value="Kunden hinzufügen">
     </form>
 </body>

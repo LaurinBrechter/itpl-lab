@@ -1,14 +1,5 @@
 <?php
-$servername = "localhost";
-$username = "your_username";
-$password = "your_password";
-$dbname = "your_database_name";
-
-// Verbindung herstellen
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
 // Daten aus dem Formular empfangen
 $name = $_POST['name'];
@@ -29,7 +20,7 @@ $stmt->execute();
 $address_id = $stmt->insert_id; // Die ID der gerade eingefügten Adresse erhalten
 
 // Servicepartner in die Datenbank einfügen
-$sql = "INSERT INTO servicepartners (name, tax_number, address_id, isInternal) VALUES (?, ?, ?, ?)";
+$sql = "INSERT INTO service_partners (name, tax_number, address_id, isInternal) VALUES (?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("ssii", $name, $tax_number, $address_id, $isInternal);
 $stmt->execute();
@@ -42,4 +33,3 @@ if ($stmt->affected_rows > 0) {
 
 $stmt->close();
 $conn->close();
-?>
