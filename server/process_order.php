@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (!$customer) {
         http_response_code(404);
         echo '{"success": false, "msg": "Customer not found"}';
-        exit();
+        exit(1);
     }
 
     if ($customer["isVip"] == 1) {
@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $sql = "
     START TRANSACTION;
-    INSERT INO orders (sp_id, status, customer_id, priority) 
+    INSERT INTO orders (sp_id, status, customer_id, priority) 
     VALUES ($sp_id, 'PENDING', $customer_id, '$priority');
     SET @order_id = LAST_INSERT_ID();
     $sql_order_items;
@@ -61,29 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $res = $conn->multi_query($sql);
 
-
-
-
-    // Fetch all results of the multi-query
-    do {
-        if ($result = $conn->store_result()) {
-            // if (!$result) {
-            //     http_response_code(500);
-            //     echo "Couldn't create order";
-            // }
-            $result->free();
-        }
-    } while
-    (
-        // $conn->more_results() &&
-        $conn->next_result()
-    );
-
-    exit(0);
+    while ($conn->next_result()) {
+        ;
+    } // flush multi_queries
 
 
     if ($conn->affected_rows === -1) {
         echo "Error: " . $conn->error;
+        exit(1);
     } else {
         $order_id_query = "SELECT @order_id as order_id";
         $order_id_result = $conn->query($order_id_query);
@@ -98,12 +83,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         select * from order_items where order_id = $order_id
     ),
     product_storage as (
-        select oi.order_id, oi.product_id, oi.amount, p.storage_amount, p.storage_amount - oi.amount as new_amount
+        select 
+            oi.order_id, 
+            oi.product_id, 
+            oi.amount, 
+            p.storage_amount, 
+            p.storage_amount - oi.amount as new_amount,
+            p.production_duration
         from oi
         left join test_db.products p on oi.product_id = p.id
     )
     select 
-        if(ps.new_amount >= 0, ps.amount, ps.storage_amount) as to_send, -- Adjust this line as needed
+        if(ps.new_amount >= 0, ps.amount, ps.storage_amount) as to_send,
         case 
             when ps.new_amount - 10 >= 0 then 0
             when ps.new_amount <= 10 and ps.new_amount >= 0 then 10 - ps.new_amount + 5
@@ -116,6 +107,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $production_plan = $conn->query($production_plan_sql);
 
     // check if query went through
+    if (!$production_plan) {
+        echo "Error: " . $conn->error;
+        exit(1);
+    }
 
 
 
@@ -125,10 +120,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $isStorageOrder = false;
     $isProductionOrder = false;
+
+    // get the total current workload in hours of the facilities
+    $total_workload = $conn->query("with workload as (
+        select
+            pp.amount * p.production_duration as production_duration,
+            facility_id 
+        from production_plan pp
+        left join products p 
+        on pp.product_id = p.id
+        where pp.status = 'PENDING' OR pp.status = 'IN_PROGRESS'
+    )
+    select 
+        sum(production_duration) as total_current_workload, 
+        facility_id  
+    from workload 
+    group by facility_id ");
+
+    $total_workload_arr = [];
+    while ($row = $total_workload->fetch_assoc()) {
+        $total_workload_arr[] = $row;
+    }
+
+    function argmin_workload($data)
+    {
+        $min_workload = PHP_INT_MAX;
+        $min_facility_id = null;
+        $idx = null;
+
+        foreach ($data as $row) {
+            if ($row['total_current_workload'] < $min_workload) {
+                $min_workload = $row['total_current_workload'];
+                $min_facility_id = $row['facility_id'];
+                $idx = array_search($row, $data);
+            }
+        }
+
+        return [$min_facility_id, $idx];
+
+    }
+
+    // loop through the production plan, each iteration is one order_item/product
     foreach ($production_plan as $row) {
-        $to_send = $row['to_send'];
-        $to_produce_store = $row['to_produce_store'];
-        $to_produce_cust = $row['to_produce_cust'];
+        $to_send = $row['to_send']; // what to send to the customer
+        $to_produce_store = $row['to_produce_store']; // what to produce for the storage
+        $to_produce_cust = $row['to_produce_cust']; // what to produce for the customer -> higher prio
         $product_id = $row['product_id'];
         $order_id = $row['order_id'];
 
@@ -137,22 +173,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // TODO needs to be added back if e.g. the order is cancelled
             $conn->query("UPDATE products SET storage_amount = storage_amount - $to_send WHERE id = $product_id");
 
-            // reserve the amount in the storage
-            $conn->query("INSERT INTO storage_logs (product_id, storage_id, order_id, amount, detail) 
-            VALUES ($product_id, 1, $order_id, -$to_send, 'RESERVED')
+
+            // figure out from which storage facility we can take the product from
+            // note that at this point we already know that facility storage will be enough to cover the demand
+            $facility_storage = $conn->query("select storage_id, sum(amount) as total_amount, product_id  
+            from storage_logs sl
+            where product_id = $product_id
+            group by storage_id, product_id
+            having sum(amount) > 0
             ");
+
+            // reserve the amount in the storage facilities until the amount we need is reached.
+            foreach ($facility_storage as $row) {
+                $storage_id_rand = $row['storage_id'];
+                $amount = $row['total_amount'];
+                $conn->query("INSERT INTO storage_logs (product_id, storage_id, order_id, amount, detail) 
+                VALUES ($product_id, $storage_id_rand, $order_id, -$to_send, 'RESERVED')
+                ");
+                $to_send -= $amount;
+                if ($to_send <= 0) {
+                    break;
+                }
+            }
+
         }
-        if ($to_produce_store > 0) {
-            $conn->query("INSERT INTO 
-            production_plan (product_id, amount, order_id, status, priority, target) 
-            VALUES ($product_id, $to_produce_store, $order_id, 'PENDING', 'LOW', 'STORAGE')");
+
+        if ($to_produce_store > 0 || $to_produce_cust > 0) {
+            // figure out the facility that has the least workload
+            [$min_facility_id, $idx] = argmin_workload($total_workload_arr);
+
             $isProductionOrder = true;
-        }
-        if ($to_produce_cust > 0) {
-            $conn->query("INSERT INTO 
-            production_plan (product_id, amount, order_id, status, priority, target) 
-            VALUES ($product_id, $to_produce_cust, $order_id, 'PENDING', 'MEDIUM', 'CUSTOMER')");
-            $isProductionOrder = true;
+
+            // storage production gets low prio
+            if ($to_produce_store > 0) {
+                $priority_production = "LOW";
+                $detail = "STORAGE";
+                $production_amount = $to_produce_store;
+            }
+
+            // customer production gets high or medium prio depending on customer's vip status
+            if ($to_produce_cust > 0) {
+                $priority_production = $priority;
+                $detail = "CUSTOMER";
+                $production_amount = $to_produce_cust;
+            }
+
+            $res = $conn->query("INSERT INTO 
+            production_plan (product_id, amount, order_id, status, priority, target, facility_id) 
+            VALUES ($product_id, $production_amount, $order_id, 'PENDING', '$priority', '$detail', $min_facility_id)");
+
+            if (!$res) {
+                echo "Error: " . $conn->error;
+                exit(1);
+            } else {
+                $total_workload_arr[$idx]['total_current_workload'] += $row["production_duration"];
+            }
+
+
         }
     }
 
