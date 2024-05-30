@@ -83,7 +83,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         select * from order_items where order_id = $order_id
     ),
     product_storage as (
-        select oi.order_id, oi.product_id, oi.amount, p.storage_amount, p.storage_amount - oi.amount as new_amount
+        select 
+            oi.order_id, 
+            oi.product_id, 
+            oi.amount, 
+            p.storage_amount, 
+            p.storage_amount - oi.amount as new_amount,
+            p.production_duration
         from oi
         left join test_db.products p on oi.product_id = p.id
     )
@@ -114,6 +120,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $isStorageOrder = false;
     $isProductionOrder = false;
+
+    // get the total current workload in hours of the facilities
+    $total_workload = $conn->query("with workload as (
+        select
+            pp.amount * p.production_duration as production_duration,
+            facility_id 
+        from production_plan pp
+        left join products p 
+        on pp.product_id = p.id
+        where pp.status = 'PENDING' OR pp.status = 'IN_PROGRESS'
+    )
+    select 
+        sum(production_duration) as total_current_workload, 
+        facility_id  
+    from workload 
+    group by facility_id ");
+
+    $total_workload_arr = [];
+    while ($row = $total_workload->fetch_assoc()) {
+        $total_workload_arr[] = $row;
+    }
+
+    function argmin_workload($data)
+    {
+        $min_workload = PHP_INT_MAX;
+        $min_facility_id = null;
+        $idx = null;
+
+        foreach ($data as $row) {
+            if ($row['total_current_workload'] < $min_workload) {
+                $min_workload = $row['total_current_workload'];
+                $min_facility_id = $row['facility_id'];
+                $idx = array_search($row, $data);
+            }
+        }
+
+        return [$min_facility_id, $idx];
+
+    }
 
     // loop through the production plan, each iteration is one order_item/product
     foreach ($production_plan as $row) {
@@ -152,17 +197,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
         }
-        if ($to_produce_store > 0) {
-            $conn->query("INSERT INTO 
-            production_plan (product_id, amount, order_id, status, priority, target) 
-            VALUES ($product_id, $to_produce_store, $order_id, 'PENDING', 'LOW', 'STORAGE')");
+
+        if ($to_produce_store > 0 || $to_produce_cust > 0) {
+            // figure out the facility that has the least workload
+            [$min_facility_id, $idx] = argmin_workload($total_workload_arr);
+
             $isProductionOrder = true;
-        }
-        if ($to_produce_cust > 0) {
-            $conn->query("INSERT INTO 
-            production_plan (product_id, amount, order_id, status, priority, target) 
-            VALUES ($product_id, $to_produce_cust, $order_id, 'PENDING', 'MEDIUM', 'CUSTOMER')");
-            $isProductionOrder = true;
+
+            // storage production gets low prio
+            if ($to_produce_store > 0) {
+                $priority_production = "LOW";
+                $detail = "STORAGE";
+                $production_amount = $to_produce_store;
+            }
+
+            // customer production gets high or medium prio depending on customer's vip status
+            if ($to_produce_cust > 0) {
+                $priority_production = $priority;
+                $detail = "CUSTOMER";
+                $production_amount = $to_produce_cust;
+            }
+
+            $res = $conn->query("INSERT INTO 
+            production_plan (product_id, amount, order_id, status, priority, target, facility_id) 
+            VALUES ($product_id, $production_amount, $order_id, 'PENDING', '$priority', '$detail', $min_facility_id)");
+
+            if (!$res) {
+                echo "Error: " . $conn->error;
+                exit(1);
+            } else {
+                $total_workload_arr[$idx]['total_current_workload'] += $row["production_duration"];
+            }
+
+
         }
     }
 
