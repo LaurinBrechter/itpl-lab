@@ -5,6 +5,7 @@
         <div class="navitems">
             <div><a href="/management/overview/index.php">Übersicht</a></div>
             <div><a href="/management">Hinzufügen</a></div>
+			<div><a href="/sp/catalog/index.php">Katalog</a></div>
         </div>
     </ul>
 </nav>
