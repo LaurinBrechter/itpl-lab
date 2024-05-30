@@ -17,7 +17,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
 
-    $payload = getJwtPayload($_COOKIE["jwt"], 'SERVICE_PARTNER');
+    $payload = getJwtPayload($_COOKIE["jwt"], 'SERVICE_PARTNER', 'Management');
 
     ?>
     <div class="table-container">
