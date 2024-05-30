@@ -12,6 +12,12 @@ $state = $_POST['state'];
 $zip = $_POST['zip'];
 $country = $_POST['country'];
 
+// User in Datenbank anlegen
+$sql = "INSERT INTO users (username, role) VALUES (?, ?)";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("ss", $name, 'SERVICE_PARTNER');
+$stmt->execute();
+
 // Adresse in die Datenbank einfügen
 $sql = "INSERT INTO addresses (street, house_number, city, state, zip, country) VALUES (?, ?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
