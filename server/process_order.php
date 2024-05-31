@@ -152,6 +152,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        if ($min_facility_id == null) {
+            $min_facility_id = 1;
+        }
+
         return [$min_facility_id, $idx];
 
     }
@@ -214,9 +218,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $production_amount = $to_produce_cust;
             }
 
-            $res = $conn->query("INSERT INTO 
+            $sql = "INSERT INTO 
             production_plan (product_id, amount, order_id, status, priority, target, facility_id) 
-            VALUES ($product_id, $production_amount, $order_id, 'PENDING', '$priority', '$detail', $min_facility_id)");
+            VALUES ($product_id, $production_amount, $order_id, 'PENDING', '$priority', '$detail', $min_facility_id)";
+
+            $res = $conn->query($sql);
 
             if (!$res) {
                 echo "Error: " . $conn->error;
