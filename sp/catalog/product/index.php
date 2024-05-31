@@ -9,6 +9,8 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
     include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
+    $payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER', 'MANAGEMENT']);
+
     $product_id = $_GET["id"];
     $sql = "SELECT * FROM products WHERE id = $product_id;";
 

@@ -113,11 +113,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
-
-    // echo json_encode($production_plan->fetch_all(MYSQLI_ASSOC));
-    // print_r($production_plan_sql);
-    // exit(0);
-
     $isStorageOrder = false;
     $isProductionOrder = false;
 
@@ -142,6 +137,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $total_workload_arr[] = $row;
     }
 
+    // get the facility with the least workload
     function argmin_workload($data)
     {
         $min_workload = PHP_INT_MAX;
@@ -185,10 +181,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // reserve the amount in the storage facilities until the amount we need is reached.
             foreach ($facility_storage as $row) {
-                $storage_id_rand = $row['storage_id'];
+                $storage_id = $row['storage_id'];
                 $amount = $row['total_amount'];
                 $conn->query("INSERT INTO storage_logs (product_id, storage_id, order_id, amount, detail) 
-                VALUES ($product_id, $storage_id_rand, $order_id, -$to_send, 'RESERVED')
+                VALUES ($product_id, $storage_id, $order_id, -$to_send, 'RESERVED')
                 ");
                 $to_send -= $amount;
                 if ($to_send <= 0) {
@@ -233,6 +229,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // send a websocket event such that the production facility can update its view
     if ($isProductionOrder) {
         sendMsg('{"success": true, "data": "Order placed and production planned"}');
     }

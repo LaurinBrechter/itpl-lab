@@ -1,6 +1,6 @@
 <nav>
     <ul class="navbar">
-        <div class="logo"></div>
+        <img src="/Firefly 20240508165455.png" alt="logo" width="30px" height="40px">
         <h1>Service Partner</h1>
         <?php echo $username ?>
         <div class="navitems">

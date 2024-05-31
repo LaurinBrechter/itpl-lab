@@ -23,7 +23,10 @@
 </head>
 <body>
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php'; 
-	include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';?>
+	include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
+    $payload = getJwtPayload($_COOKIE["jwt"], ['MANAGEMENT']);
+        
+    ?>
     <h1>Übersicht der Kunden und Servicepartner</h1>
 
     <h2>Kunden</h2>
@@ -42,7 +45,7 @@
         <?php
 // Kunden abfragen
         $sql = "SELECT customers.id AS customer_id, customers.name, addresses.street, addresses.house_number, addresses.city, customers.telephone_number, customers.isVip 
-                FROM customers 
+                FROM customers
                 LEFT JOIN addresses ON customers.address_id = addresses.id";
         $result = $conn->query($sql);
 

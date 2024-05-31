@@ -17,7 +17,7 @@
 
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
 
-    $payload = getJwtPayload($_COOKIE["jwt"], 'MANAGEMENT');
+    $payload = getJwtPayload($_COOKIE["jwt"], ['MANAGEMENT']);
 
     ?>
     <h1>Neuen Servicepartner hinzufügen</h1>

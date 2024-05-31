@@ -5,11 +5,11 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
 
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/server/notification.php';
+    <?php
 
-    renderNotification("Thank You!", "success")
-
-        ?>
+    // include $_SERVER['DOCUMENT_ROOT'] . '/server/notification.php';
+    // renderNotification("Thank You!", "success")
+    ?>
 
 
 
@@ -19,8 +19,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
 
-    $payload = getJwtPayload($_COOKIE["jwt"], 'STORAGE');
-
+    $payload = getJwtPayload($_COOKIE["jwt"], ['STORAGE']);
     $storage_id = $conn->query("select * from storage_facilities where user_id = $payload->user_id;")->fetch_assoc()["id"];
 
     // check for post request

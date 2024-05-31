@@ -11,10 +11,16 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
 
-    $payload = getJwtPayload($_COOKIE["jwt"], 'PRODUCTION');
+    $payload = getJwtPayload($_COOKIE["jwt"], ['PRODUCTION']);
 
     $production_id = $conn->query("select * from production_facilities where user_id = $payload->user_id;")->fetch_assoc()["id"];
-    $production_plan = $conn->query("SELECT * FROM production_plan where facility_id = $production_id order by status asc, priority desc;");
+    $production_plan = $conn->query("SELECT * 
+    FROM production_plan 
+    where 
+        facility_id = $production_id 
+    order by 
+        status asc, 
+        priority desc;");
 
     ?>
 

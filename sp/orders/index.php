@@ -10,7 +10,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
 
-    $payload = getJwtPayload($_COOKIE["jwt"], 'SERVICE_PARTNER');
+    $payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER']);
 
     $user_id = $payload->user_id;
     $sp = $conn->query("SELECT * FROM service_partners WHERE user_id = $user_id;")->fetch_assoc();
@@ -69,9 +69,6 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                         echo "<td>" . $row['amount'] . "</td>";
                         echo "</tr>";
                         $current_order_id = $row['order_id'];
-                        // echo "<tr>";
-                        // echo "<td colspan='5'>" . $row['item_name'] . "</td>";
-                        // echo "</tr>";
                     }
                 } else {
                     echo "<tr><td colspan='5'>No orders found</td></tr>";
