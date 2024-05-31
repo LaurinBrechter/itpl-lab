@@ -6,32 +6,45 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
 
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php'; ?>
+    <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
+
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
+    $categories = $conn->query("select distinct category from test_db.products;");
+    $payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER', 'MANAGEMENT']);
+
+    ?>
     <form>
+        <select name="category" id="category">
+            <option value="">All Categories</option>
+            <?php
+            while ($row = $categories->fetch_assoc()) {
+                echo "<option value='" . $row["category"] . "'>" . $row["category"] . "</option>";
+            }
+            ?>
+        </select>
         <label for="sku">Search for a Product</label>
         <input type="text" id="sku-search" name="sku">
         <button type="submit">Search</button>
     </form>
-    <?php
-
-    include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
-    include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
-
-    $payload = getJwtPayload($_COOKIE["jwt"], 'SERVICE_PARTNER', 'Management');
-
-    ?>
     <div class="table-container">
         <?php
         $search_term = $_GET["sku"];
+        $category = $_GET["category"];
 
-        if (empty($search_term)) {
-            $sql = "SELECT * FROM test_db.products;";
-        } else {
-            $sql = "SELECT * FROM test_db.products where name like '%$search_term%';";
+        $sql = "SELECT * FROM test_db.products where true";
+
+        if (!empty($search_term)) {
+            $sql .= " AND name like '%$search_term%'";
+        }
+        if (!empty($category)) {
+            $sql .= " AND category = '$category'";
         }
 
-        // echo $sql;
-        
+        $sql .= ";";
+
+        echo $sql;
+
         $products = $conn->query($sql);
 
         if ($products->num_rows > 0) {
@@ -39,6 +52,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
             echo "<thead>";
             echo "<tr>";
             echo "<th>Name</th>";
+            echo "<th>Category</th>";
             echo "<th>Price</th>";
             echo "<th>Quantity Available</th>";
             // echo "<th>Order</th>";
@@ -52,6 +66,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
                 echo "<tr>";
                 echo "<td>" . $row["name"] . "</td>";
+                echo "<td>" . $row["category"] . "</td>";
                 echo "<td>" . $row["price"] . "€</td>";
                 echo "<td>" . $row["storage_amount"] . "</td>";
                 // echo "<td>TODO</td>";

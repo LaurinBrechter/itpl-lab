@@ -86,7 +86,7 @@ CREATE TABLE production_plan (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     priority ENUM('LOW', 'MEDIUM', 'HIGH'),
     target ENUM('STORAGE', 'CUSTOMER'),
-    facility_id INT,
+    facility_id INT
 );
 
 CREATE TABLE IF NOT EXISTS storage_facilities (
