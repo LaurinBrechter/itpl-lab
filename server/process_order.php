@@ -121,16 +121,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         select
             pp.amount * p.production_duration as production_duration,
             facility_id 
-        from production_plan pp
+        from production_plan pp 
         left join products p 
         on pp.product_id = p.id
-        where pp.status = 'PENDING' OR pp.status = 'IN_PROGRESS'
+    ),
+    workload_grouped as (
+    select sum(production_duration) as total_current_workload, facility_id  from workload group by facility_id
     )
-    select 
-        sum(production_duration) as total_current_workload, 
-        facility_id  
-    from workload 
-    group by facility_id ");
+    select COALESCE(total_current_workload, 0) as total_current_workload, id as facility_id from workload_grouped wg
+    right join production_facilities pf on wg.facility_id = pf.id");
 
     $total_workload_arr = [];
     while ($row = $total_workload->fetch_assoc()) {
@@ -150,10 +149,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $min_facility_id = $row['facility_id'];
                 $idx = array_search($row, $data);
             }
-        }
-
-        if ($min_facility_id == null) {
-            $min_facility_id = 1;
         }
 
         return [$min_facility_id, $idx];
