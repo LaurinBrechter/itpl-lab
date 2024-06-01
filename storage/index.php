@@ -20,10 +20,9 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
 
     $payload = getJwtPayload($_COOKIE["jwt"], ['STORAGE']);
+    $sql = "select * from storage_facilities where user_id = $payload->user_id;";
     $storage_id = $conn->query("select * from storage_facilities where user_id = $payload->user_id;")->fetch_assoc()["id"];
 
-    // check for post request
-    
     $storage_logs = $conn->query(
         "
         SELECT 

@@ -20,7 +20,8 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
         facility_id = $production_id 
     order by 
         status asc, 
-        priority desc;");
+        priority desc,
+        created_at asc;");
 
     ?>
 

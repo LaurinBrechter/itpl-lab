@@ -132,7 +132,7 @@ input[type=number] {
 }
 
 .catalog-table {
-    width: 100%;
+    width: 30%;
 }
 
 form {
@@ -147,7 +147,7 @@ form {
 }
 
 .storage-movement-table {
-    width: 100%;
+    width: 50%;
 }
 
 .notification-container {
@@ -169,4 +169,9 @@ form {
     right: 5px;
     color: white;
     cursor: pointer;
+}
+
+.chart-container {
+    width: 400px;
+    height: 400px;
 }
