@@ -13,7 +13,6 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
 
 
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/storage/storage_navbar.php'; ?>
     <?php
 
     include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
@@ -22,6 +21,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     $payload = getJwtPayload($_COOKIE["jwt"], ['STORAGE']);
     $sql = "select * from storage_facilities where user_id = $payload->user_id;";
     $storage_id = $conn->query("select * from storage_facilities where user_id = $payload->user_id;")->fetch_assoc()["id"];
+    include $_SERVER['DOCUMENT_ROOT'] . '/storage/storage_navbar.php';
 
     $storage_logs = $conn->query(
         "
