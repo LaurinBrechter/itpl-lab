@@ -79,7 +79,7 @@ CREATE TABLE order_items (
 
 CREATE TABLE production_plan (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    status enum('PENDING','COMPLETED','CANCELLED'),
+    status enum('PENDING','COMPLETED','CANCELLED', 'IN_PROGRESS'),
     product_id INT,
     amount INT,
     order_id INT,
