@@ -215,7 +215,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $sql = "INSERT INTO 
             production_plan (product_id, amount, order_id, status, priority, target, facility_id) 
-            VALUES ($product_id, $production_amount, $order_id, 'PENDING', '$priority', '$detail', $min_facility_id)";
+            VALUES ($product_id, $production_amount, $order_id, 'PENDING', '$priority_production', '$detail', $min_facility_id)";
 
             $res = $conn->query($sql);
 
