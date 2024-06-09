@@ -5,16 +5,16 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
 
 <body>
-    <h1>Login</h1>
-    <form action="login.php" method="POST">
-        <label for="username">Username:</label>
-        <input type="text" id="username" name="username" required><br><br>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <input type="submit" value="Login">
-    </form>
+    <div class="login-container">
+        <form action="login.php" method="POST" class="login-form">
+            <h1>Login</h1>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required><br><br>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br><br>
+            <button type="submit">Login</button>
+        </form>
+    </div>
 </body>
 
 <script>
