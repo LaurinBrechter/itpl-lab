@@ -5,7 +5,6 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/send-message.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    // request body: {"items": [{"amount":"20","productId":"1","productName":"Premium Smartphone"}], "sp_id": 1, "customer_id": 1}
 
     // when requesting via postman
     $requestBody = file_get_contents('php://input');
@@ -16,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = $_POST;
     }
 
+    // request body: {"items": [{"amount":"10","productId":"7"}], "sp_id": 1, "customer_id": 1}
 
     $items = $data["items"];
     $sql_order_items = "INSERT INTO order_items (order_id, product_id, amount) VALUES ";
@@ -126,9 +126,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         on pp.product_id = p.id
     ),
     workload_grouped as (
-    select sum(production_duration) as total_current_workload, facility_id  from workload group by facility_id
+    select sum(production_duration) as total_current_workload, 
+    facility_id  from workload group by facility_id
     )
-    select COALESCE(total_current_workload, 0) as total_current_workload, id as facility_id from workload_grouped wg
+    select COALESCE(total_current_workload, 0) as total_current_workload, 
+    snid as facility_id from workload_grouped wg
     right join production_facilities pf on wg.facility_id = pf.id");
 
     $total_workload_arr = [];
@@ -165,8 +167,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if ($to_send > 0) {
             // reduce the official storage amount
-            // TODO needs to be added back if e.g. the order is cancelled
-            $conn->query("UPDATE products SET storage_amount = storage_amount - $to_send WHERE id = $product_id");
+            $conn->query("UPDATE 
+                products SET storage_amount = storage_amount - $to_send 
+                WHERE id = $product_id");
 
 
             // figure out from which storage facility we can take the product from
@@ -196,7 +199,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($to_produce_store > 0 || $to_produce_cust > 0) {
             // figure out the facility that has the least workload
             [$min_facility_id, $idx] = argmin_workload($total_workload_arr);
-
             $isProductionOrder = true;
 
             // storage production gets low prio
@@ -215,7 +217,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $sql = "INSERT INTO 
             production_plan (product_id, amount, order_id, status, priority, target, facility_id) 
-            VALUES ($product_id, $production_amount, $order_id, 'PENDING', '$priority_production', '$detail', $min_facility_id)";
+            VALUES ($product_id, $production_amount, $order_id, 'PENDING', 
+            '$priority_production', '$detail', $min_facility_id)";
 
             $res = $conn->query($sql);
 
@@ -225,8 +228,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 $total_workload_arr[$idx]['total_current_workload'] += $row["production_duration"];
             }
-
-
         }
     }
 
