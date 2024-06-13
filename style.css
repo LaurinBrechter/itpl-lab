@@ -21,6 +21,9 @@ table td {
 .table-container {
     height: 600px;
     overflow-y: auto;
+    width: 100%;
+    display: flex;
+    justify-content: center;
 }
 
 table thead th {
@@ -84,7 +87,8 @@ input[type=number] {
     align-items: center;
     background-color: #00142d;
     margin: 0;
-    color: #dadcdf
+    color: #dadcdf;
+    gap: 10px;
 }
 
 /* Füge das Logo als Hintergrundbild hinzu */
@@ -132,7 +136,7 @@ input[type=number] {
 }
 
 .catalog-table {
-    width: 30%;
+    width: 100%;
 }
 
 form {
@@ -147,7 +151,7 @@ form {
 }
 
 .storage-movement-table {
-    width: 50%;
+    width: 100%;
 }
 
 .notification-container {
@@ -196,4 +200,16 @@ form {
 .page-container {
     padding: 10px;
     display: flex;
+}
+
+.p-10 {
+    padding: 10px;
+}
+
+.css-sucks {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    padding: 10px;
+    justify-content: center;
 }

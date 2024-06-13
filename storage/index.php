@@ -83,49 +83,51 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
         <!-- <input type="submit" value="" id="submit" name="submit"> -->
     </form>
     <!-- <p style="display: none;" id="notification">Thank You!</p> -->
-    <div class="table-container">
-        <?php
-        if ($storage_logs->num_rows > 0) {
-            echo "<table class='storage-movement-table'>";
-            echo "<thead>";
-            echo "<tr>";
-            echo "<th>Product Name</th>";
-            echo "<th>Created At</th>";
-            echo "<th>Order Id</th>";
-            echo "<th>amount</th>";
-            echo "<th>Destination</th>";
-            echo "<th>Details</th>";
-            echo "<th>Action</th>";
-            echo "</tr>";
-            echo "</thead>";
-            echo "<tbody>";
-            while ($row = $storage_logs->fetch_assoc()) {
+    <div class="page-container">
+        <div class="table-container">
+            <?php
+            if ($storage_logs->num_rows > 0) {
+                echo "<table class='storage-movement-table'>";
+                echo "<thead>";
                 echo "<tr>";
-                echo "<td>" . $row["name"] . "</td>";
-                echo "<td>" . $row["created_at"] . "</td>";
-                echo "<td>" . $row["order_id"] . "</td>";
-                echo "<td>";
-                if ($row["amount"] > 0) {
-                    echo "IN " . $row["amount"];
-                } elseif ($row["amount"] < 0) {
-                    echo "OUT " . abs($row["amount"]);
-                } else {
-                    echo $row["amount"];
-                }
-                echo "</td>";
-                echo "<td>" . $row["address"] . "</td>";
-                echo "<td>" . $row["detail"] . "</td>";
-                if ($row["detail"] == "RESERVED") {
-                    echo "<td><button onclick=\"confirmShipment(" . $row["id"] . ")\">Confirm Shipment</button></td>";
-                } else {
-                    echo "<td></td>";
-                }
+                echo "<th>Product Name</th>";
+                echo "<th>Created At</th>";
+                echo "<th>Order Id</th>";
+                echo "<th>amount</th>";
+                echo "<th>Destination</th>";
+                echo "<th>Details</th>";
+                echo "<th>Action</th>";
                 echo "</tr>";
+                echo "</thead>";
+                echo "<tbody>";
+                while ($row = $storage_logs->fetch_assoc()) {
+                    echo "<tr>";
+                    echo "<td>" . $row["name"] . "</td>";
+                    echo "<td>" . $row["created_at"] . "</td>";
+                    echo "<td>" . $row["order_id"] . "</td>";
+                    echo "<td>";
+                    if ($row["amount"] > 0) {
+                        echo "IN " . $row["amount"];
+                    } elseif ($row["amount"] < 0) {
+                        echo "OUT " . abs($row["amount"]);
+                    } else {
+                        echo $row["amount"];
+                    }
+                    echo "</td>";
+                    echo "<td>" . $row["address"] . "</td>";
+                    echo "<td>" . $row["detail"] . "</td>";
+                    if ($row["detail"] == "RESERVED") {
+                        echo "<td><button onclick=\"confirmShipment(" . $row["id"] . ")\">Confirm Shipment</button></td>";
+                    } else {
+                        echo "<td></td>";
+                    }
+                    echo "</tr>";
+                }
+                echo "</tbody>";
+                echo "</table>";
             }
-            echo "</tbody>";
-            echo "</table>";
-        }
-        ?>
+            ?>
+        </div>
     </div>
 </body>
 <!-- https://stackoverflow.com/questions/6806028/post-without-redirect-with-php -->
@@ -133,8 +135,6 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     $('#storage_movement_form').submit(function () {
         var post_data = $('#storage_movement_form').serialize();
         $.post('/server/insert_storage_movement.php', post_data, function (data) {
-            // $('#notification').show();
-            console.log(data);
             // reload the page
             location.reload();
         });
@@ -142,16 +142,11 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
     function confirmShipment(id) {
 
-        console.log(id);
-
         $.post('/server/confirm_shipment.php', {
             id: id
         }, function (data) {
-
-            // read json
             res = JSON.parse(data);
 
-            console.log(data);
             if (res.success) {
                 alert("Shipment confirmed");
                 location.reload();
@@ -160,7 +155,6 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
             }
         });
     }
-
 </script>
 
 </html>

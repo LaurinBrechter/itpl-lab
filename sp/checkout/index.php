@@ -30,6 +30,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
             <tr>
                 <th>Product Name</th>
                 <th>Amount</th>
+                <th>Unit Price</th>
             </tr>
         </thead>
         <tbody id="checkout-items">
@@ -49,6 +50,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
         ?>
         <input type="hidden" id="sp-id" name="sp-id" value="<?php echo $sp_id ?>">
     </form>
+    <div id="total-price"></div>
 
 </body>
 
@@ -60,19 +62,26 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
         renderItems();
     }
     function renderItems() {
-
+        total = 0
         var html = '';
         var existingItems = JSON.parse(sessionStorage.getItem('items')) || [];
         console.log(existingItems); // (2) [{amount: '20', productId: '1'}]
         for (var i = 0; i < existingItems.length; i++) {
+
             var item = existingItems[i];
+            if (item) {
+                console.log(item.amount, item.price)
+                total += parseInt(item.amount) * parseFloat(item.price)
+            }
             html += '<tr>';
             html += '<td>' + item.productName + '</td>';
             html += '<td>' + item.amount + '</td>';
+            html += '<td>' + item.price + '</td>';
             html += '<td><button onclick="removeItem(' + i + ')">Remove</button></td>'
             html += '</tr>';
         }
         document.getElementById('checkout-items').innerHTML = html;
+        document.getElementById("total-price").innerHTML = total
     }
 
     renderItems();
