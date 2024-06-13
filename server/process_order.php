@@ -1,10 +1,32 @@
 <?php
 
+function safe_query($conn, $sql)
+{
+    try {
+        $res = $conn->query($sql);
+        return $res;
+    } catch (Exception $e) {
+        http_response_code(500);
+        echo '{"success": false, "msg":' . $e->getMessage() . '}';
+        $conn->rollback();
+        exit(1);
+    }
+
+    if (!$res) {
+        http_response_code(500);
+        echo '{"success": false, "msg":' . $conn->error . '}';
+        $conn->rollback();
+        exit(1);
+    }
+}
+
+
 include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/server/send-message.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    $conn->autocommit(FALSE);
 
     // when requesting via postman
     $requestBody = file_get_contents('php://input');
@@ -47,35 +69,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
+    $conn->begin_transaction();
 
     $sql = "
-    START TRANSACTION;
     INSERT INTO orders (sp_id, status, customer_id, priority) 
     VALUES ($sp_id, 'PENDING', $customer_id, '$priority');
     SET @order_id = LAST_INSERT_ID();
-    $sql_order_items;
-    COMMIT;";
-
-    // echo $sql;
+    $sql_order_items;";
 
 
     $res = $conn->multi_query($sql);
 
     while ($conn->next_result()) {
         ;
+        // if (!$conn->store_result()) {
+        //     echo '{"success": false, "msg":' . $conn->error . '}';
+        //     $conn->rollback();
+        //     exit(1);
+        // }
     } // flush multi_queries
 
 
     if ($conn->affected_rows === -1) {
         echo "Error: " . $conn->error;
+        $conn->rollback();
         exit(1);
     } else {
         $order_id_query = "SELECT @order_id as order_id";
         $order_id_result = $conn->query($order_id_query);
         $order_id_row = $order_id_result->fetch_assoc();
         $order_id = $order_id_row['order_id'];
-
-        print_r($order_id);
     }
 
 
@@ -93,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         from oi
         left join test_db.products p on oi.product_id = p.id
     )
-    select 
+    select  
         if(ps.new_amount >= 0, ps.amount, ps.storage_amount) as to_send,
         case 
             when ps.new_amount - 10 >= 0 then 0
@@ -104,20 +127,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ps.*
     from product_storage ps";
 
-    $production_plan = $conn->query($production_plan_sql);
-
-    // check if query went through
-    if (!$production_plan) {
-        echo "Error: " . $conn->error;
-        exit(1);
-    }
+    $production_plan = safe_query($conn, $production_plan_sql);
 
 
     $isStorageOrder = false;
     $isProductionOrder = false;
 
     // get the total current workload in hours of the facilities
-    $total_workload = $conn->query("with workload as (
+    $total_workload = safe_query($conn, "with workload as (
         select
             pp.amount * p.production_duration as production_duration,
             facility_id 
@@ -130,8 +147,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     facility_id  from workload group by facility_id
     )
     select COALESCE(total_current_workload, 0) as total_current_workload, 
-    snid as facility_id from workload_grouped wg
+    pf.id as facility_id from workload_grouped wg
     right join production_facilities pf on wg.facility_id = pf.id");
+
 
     $total_workload_arr = [];
     while ($row = $total_workload->fetch_assoc()) {
@@ -166,15 +184,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $order_id = $row['order_id'];
 
         if ($to_send > 0) {
-            // reduce the official storage amount
-            $conn->query("UPDATE 
+            $sql = "UPDATE 
                 products SET storage_amount = storage_amount - $to_send 
-                WHERE id = $product_id");
+                WHERE id = $product_id";
 
+            safe_query($conn, $sql);
 
             // figure out from which storage facility we can take the product from
             // note that at this point we already know that facility storage will be enough to cover the demand
-            $facility_storage = $conn->query("select storage_id, sum(amount) as total_amount, product_id  
+            $facility_storage = safe_query($conn, "select storage_id, sum(amount) as total_amount, product_id  
             from storage_logs sl
             where product_id = $product_id
             group by storage_id, product_id
@@ -184,8 +202,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // reserve the amount in the storage facilities until the amount we need is reached.
             foreach ($facility_storage as $row) {
                 $storage_id = $row['storage_id'];
-                $amount = $row['total_amount'];
-                $conn->query("INSERT INTO storage_logs (product_id, storage_id, order_id, amount, detail) 
+                $amount = min($to_send, $row['total_amount']);
+                safe_query($conn, "INSERT INTO storage_logs (product_id, storage_id, order_id, amount, detail) 
                 VALUES ($product_id, $storage_id, $order_id, -$to_send, 'RESERVED')
                 ");
                 $to_send -= $amount;
@@ -193,7 +211,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     break;
                 }
             }
-
         }
 
         if ($to_produce_store > 0 || $to_produce_cust > 0) {
@@ -220,19 +237,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             VALUES ($product_id, $production_amount, $order_id, 'PENDING', 
             '$priority_production', '$detail', $min_facility_id)";
 
-            $res = $conn->query($sql);
+            $res = safe_query($conn, $sql);
 
-            if (!$res) {
-                echo "Error: " . $conn->error;
-                exit(1);
-            } else {
-                $total_workload_arr[$idx]['total_current_workload'] += $row["production_duration"];
-            }
+            // only reachable if the query doesn't fail.
+            $total_workload_arr[$idx]['total_current_workload'] += $row["production_duration"];
         }
     }
 
     // send a websocket event such that the production facility can update its view
-    if ($isProductionOrder) {
-        sendMsg('{"success": true, "data": "Order placed and production planned"}');
-    }
+    // if ($isProductionOrder) {
+    //     sendMsg('{"success": true, "data": "Order placed and production planned"' . $order_id . '}');
+    // }
+
+    echo '{"success": true, "msg": "Order placed and production planned", "order_id": ' . $order_id . '}';
+    $conn->commit();
+
 }
