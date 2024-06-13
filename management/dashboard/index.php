@@ -50,19 +50,20 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     }
 
     ?>
-
-    <div class="chart-container">
-        <canvas id="workload-chart"></canvas>
-    </div>
-    <div class="chart-container">
-        <canvas id="orders-chart"></canvas>
+    <div class="page-container">
+        <div class="chart-container">
+            <canvas id="workload-chart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="orders-chart"></canvas>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         const orders_chart = document.getElementById('orders-chart');
         new Chart(orders_chart, {
-            type: 'bar',
+            type: 'line',
             data: {
                 labels: <?php echo json_encode($labels_orders); ?>,
                 datasets: [{

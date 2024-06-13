@@ -6,13 +6,18 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
 
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
 
+    <?php
     include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
     $categories = $conn->query("select distinct category from test_db.products;");
     $payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER', 'MANAGEMENT']);
 
+    if ($payload->role == 'SERVICE_PARTNER') {
+        include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
+    } else {
+        include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php';
+    }
     ?>
     <form>
         <select name="category" id="category">
@@ -27,63 +32,63 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
         <input type="text" id="sku-search" name="sku">
         <button type="submit">Search</button>
     </form>
-    <div class="table-container">
-        <?php
-        $search_term = $_GET["sku"];
-        $category = $_GET["category"];
+    <div class="page-container">
+        <div class="table-container">
+            <?php
+            $search_term = $_GET["sku"];
+            $category = $_GET["category"];
 
-        $sql = "SELECT * FROM test_db.products where true";
+            $sql = "SELECT * FROM test_db.products where true";
 
-        if (!empty($search_term)) {
-            $sql .= " AND name like '%$search_term%'";
-        }
-        if (!empty($category)) {
-            $sql .= " AND category = '$category'";
-        }
-
-        $sql .= ";";
-
-        echo $sql;
-
-        $products = $conn->query($sql);
-
-        if ($products->num_rows > 0) {
-            echo "<table class='catalog-table'>";
-            echo "<thead>";
-            echo "<tr>";
-            echo "<th>Name</th>";
-            echo "<th>Category</th>";
-            echo "<th>Price</th>";
-            echo "<th>Quantity Available</th>";
-            // echo "<th>Order</th>";
-            echo "<th>Est. Delivery</th>";
-            echo "<th>Details</th>";
-            echo "</tr>";
-            echo "</thead>";
-            echo "<tbody>";
-            while ($row = $products->fetch_assoc()) {
-                $sku = $row["id"];
-
-                echo "<tr>";
-                echo "<td>" . $row["name"] . "</td>";
-                echo "<td>" . $row["category"] . "</td>";
-                echo "<td>" . $row["price"] . "€</td>";
-                echo "<td>" . $row["storage_amount"] . "</td>";
-                // echo "<td>TODO</td>";
-                // echo "<td>";
-                // echo "<input type='number' id='quantity' name='quantity'>";
-                // echo "</td>";
-                echo "<td>1 week</td>";
-                echo "<td><a href='/sp/catalog/product?id=$sku'>Details</a></td>";
-                echo "</tr>";
+            if (!empty($search_term)) {
+                $sql .= " AND name like '%$search_term%'";
             }
-            echo "</tbody>";
-            echo "</table>";
-        } else {
-            echo "0 results";
-        }
+            if (!empty($category)) {
+                $sql .= " AND category = '$category'";
+            }
 
-        ?>
+            $sql .= ";";
+
+            $products = $conn->query($sql);
+
+            if ($products->num_rows > 0) {
+                echo "<table class='catalog-table'>";
+                echo "<thead>";
+                echo "<tr>";
+                echo "<th>Name</th>";
+                echo "<th>Category</th>";
+                echo "<th>Price</th>";
+                echo "<th>Quantity Available</th>";
+                // echo "<th>Order</th>";
+                echo "<th>Est. Delivery</th>";
+                echo "<th>Details</th>";
+                echo "</tr>";
+                echo "</thead>";
+                echo "<tbody>";
+                while ($row = $products->fetch_assoc()) {
+                    $sku = $row["id"];
+
+                    echo "<tr>";
+                    echo "<td>" . $row["name"] . "</td>";
+                    echo "<td>" . $row["category"] . "</td>";
+                    echo "<td>" . $row["price"] . "€</td>";
+                    echo "<td>" . $row["storage_amount"] . "</td>";
+                    // echo "<td>TODO</td>";
+                    // echo "<td>";
+                    // echo "<input type='number' id='quantity' name='quantity'>";
+                    // echo "</td>";
+                    echo "<td>1 week</td>";
+                    echo "<td><a href='/sp/catalog/product?id=$sku'>Details</a></td>";
+                    echo "</tr>";
+                }
+                echo "</tbody>";
+                echo "</table>";
+            } else {
+                echo "0 results";
+            }
+
+            ?>
+        </div>
     </div>
 </body>
 

@@ -6,19 +6,9 @@
     <style>
         <?php
         include $_SERVER['DOCUMENT_ROOT'] . '/style.css';
+        include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
         ?>
-        /* table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            border: 1px solid black;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        } */
+        
     </style>
 </head>
 <body>
@@ -28,7 +18,8 @@
         
     ?>
     <h1>Übersicht der Kunden und Servicepartner</h1>
-
+    <div class="css-sucks">
+    <div>
     <h2>Kunden</h2>
     <div class="table-container">
     <table>
@@ -67,7 +58,8 @@
         </tbody>
     </table>
     </div>
-
+    </div>
+    <div>
     <h2>Servicepartner</h2>
     <div class="table-container">
     <table>
@@ -106,6 +98,8 @@
         ?>
         </tbody>
     </table>
+    </div>
+    </div>
     </div>
 </body>
 </html>
