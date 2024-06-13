@@ -1,6 +1,6 @@
 <?php
-include $_SERVER['DOCUMENT_ROOT'] . '/database.php';
-include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php'; 
+include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Daten aus dem Formular
     $customer_id = $_POST['customer_id'];
@@ -36,6 +36,7 @@ $conn->close();
 
 <!DOCTYPE html>
 <html lang="de">
+
 <head>
     <meta charset="UTF-8">
     <title>Kundendaten bearbeiten</title>
@@ -43,6 +44,7 @@ $conn->close();
         <?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; ?>
     </style>
 </head>
+
 <body>
     <h1>Kundendaten bearbeiten</h1>
     <form action="edit_customer.php" method="POST">
@@ -51,7 +53,8 @@ $conn->close();
         <input type="text" id="name" name="name" value="<?php echo $name; ?>" required><br><br>
 
         <label for="telephone_number">Telefonnummer:</label>
-        <input type="text" id="telephone_number" name="telephone_number" value="<?php echo $telephone_number; ?>" required><br><br>
+        <input type="text" id="telephone_number" name="telephone_number" value="<?php echo $telephone_number; ?>"
+            required><br><br>
 
         <label for="isVip">VIP Status:</label>
         <input type="checkbox" id="isVip" name="isVip" <?php echo $isVip ? 'checked' : ''; ?>><br><br>
@@ -59,4 +62,5 @@ $conn->close();
         <input type="submit" value="Aktualisieren">
     </form>
 </body>
+
 </html>

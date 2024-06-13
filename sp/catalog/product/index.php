@@ -4,9 +4,15 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
 
 <body>
-    <?php include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php'; ?>
     <?php
 
+    if ($payload->role == 'SERVICE_PARTNER') {
+        include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
+    } else {
+        include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php';
+    }
+
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
     $payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER', 'MANAGEMENT']);
@@ -43,11 +49,15 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
     ?>
     <img src="https://placehold.co/500x300">
+
     <form method="get" onsubmit="event.preventDefault(); saveToSessionStorage()">
         <input type="hidden" name="product_name" value="<?php echo $row['name']; ?>">
+        <input type="hidden" name="price" value="<?php echo $row['price']; ?>">
         <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
-        <input type="number" name="amount" placeholder="Amount" min="1" step="1">
-        <button type="submit">Add to Cart</button>
+        <?php if ($payload->role != "MANAGEMENT") {
+            echo '<input type="number" name="amount" placeholder="Amount" min="1" step="1">';
+            echo '<button type="submit">Add to Cart</button>';
+        } ?>
     </form>
 
     <script>
@@ -56,6 +66,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
             var amount = document.querySelector('input[name="amount"]').value;
             var productId = document.querySelector('input[name="product_id"]').value;
             var productName = document.querySelector('input[name="product_name"]').value;
+            var price = document.querySelector('input[name="price"]').value;
             var existingItems = JSON.parse(sessionStorage.getItem('items')) || [];
             var existingItem = existingItems.find(item => item.productId === productId);
             if (existingItem) {
@@ -64,7 +75,8 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                 var newItem = {
                     amount: amount,
                     productId: productId,
-                    productName: productName
+                    productName: productName,
+                    price: price
                 };
                 existingItems.push(newItem);
             }
