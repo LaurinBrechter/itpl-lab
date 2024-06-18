@@ -1,6 +1,6 @@
 <?php
 $title = "Catalog";
-$req_jquery = false;
+$req_jquery = true;
 include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
 
@@ -31,11 +31,15 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     o.created_at,
     o.status,
     oi.amount,
-    oi.product_id 
+    oi.product_id,
+    p.name as name
     FROM 
     orders o
     left join order_items oi on o.id = oi.order_id
-    where o.sp_id = $sp_id;");
+    left join products p on oi.product_id = p.id
+    where o.sp_id = $sp_id
+    order by o.id desc
+    ;");
 
     ?>
 
@@ -45,10 +49,12 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
             <thead>
                 <tr>
                     <th>Order Id</th>
+                    <th>Product name</th>
                     <th>Order Date</th>
                     <th>Est. Delivery</th>
                     <th>Status</th>
                     <th>Amount</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,10 +69,14 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                         }
                         echo "<tr>";
                         echo "<td>" . $row['order_id'] . "</td>";
+                        echo "<td>" . $row['name'] . "</td>";
                         echo "<td>" . $row['created_at'] . "</td>";
                         echo "<td>" . $row['est_delivery'] . "</td>";
                         echo "<td>" . $row['status'] . "</td>";
                         echo "<td>" . $row['amount'] . "</td>";
+                        if ($row["status"] == "PENDING") {
+                            echo "<td><button onclick='cancelOrder(" . $row["order_id"] . ")'>Cancel</button></td>";
+                        }
                         echo "</tr>";
                         $current_order_id = $row['order_id'];
                     }
@@ -79,5 +89,23 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     </div>
 
 </body>
+
+<script>
+    function cancelOrder(order_id) {
+        console.log("Cancelling order with id", order_id);
+        $.post('/server/cancel_order.php', {
+            id: order_id
+        }, function (data) {
+            res = JSON.parse(data);
+
+            if (res.success) {
+                alert("Order Cancelled");
+                location.reload();
+            } else {
+                alert("Failed to cancel order.");
+            }
+        });
+    }
+</script>
 
 </html>

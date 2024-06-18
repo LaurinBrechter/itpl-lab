@@ -12,7 +12,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
     $categories = $conn->query("select distinct category from test_db.products;");
     $payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER', 'MANAGEMENT']);
-
+    $user_id = $payload->user_id;
     if ($payload->role == 'SERVICE_PARTNER') {
         include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
     } else {

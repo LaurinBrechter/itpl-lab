@@ -7,14 +7,13 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
 <body>
     <?php
-    include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
     $payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER']);
+    include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
 
     $user_id = $payload->user_id;
-    echo $user_id;
     $sp_id = $conn->query("SELECT * FROM service_partners WHERE user_id = $user_id;")->fetch_assoc()['id'];
 
     if ($sp_id == null) {

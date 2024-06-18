@@ -213,3 +213,8 @@ form {
     padding: 10px;
     justify-content: center;
 }
+
+.notification-container {
+    background-color: green;
+    border: 2px solid red
+}

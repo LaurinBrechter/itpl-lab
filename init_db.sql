@@ -63,7 +63,7 @@ CREATE TABLE storage_logs (
     storage_id INT,
     order_id INT,
     amount INT,
-    detail ENUM('RESERVED', 'PRODUCTION_IN', 'SHIPPED', 'MANUAL'),
+    detail ENUM('RESERVED', 'PRODUCTION_IN', 'SHIPPED', 'MANUAL', 'CANCELLED'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT `order_id3` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT `sku3` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION

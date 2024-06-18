@@ -6,18 +6,18 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 <body>
     <?php
 
-    if ($payload->role == 'SERVICE_PARTNER') {
-        include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
-    } else {
-        include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php';
-    }
 
-    include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
-    include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
-    $payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER', 'MANAGEMENT']);
-
-    $product_id = $_GET["id"];
+$payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER', 'MANAGEMENT']);
+if ($payload->role == 'SERVICE_PARTNER') {
+    include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
+} else {
+    include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php';
+}
+$user_id = $payload->user_id;
+$product_id = $_GET["id"];
     $sql = "SELECT * FROM products WHERE id = $product_id;";
 
     // check if product_id is an int
