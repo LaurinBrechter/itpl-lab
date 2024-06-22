@@ -103,13 +103,11 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     }
 
 </script>
-<!-- <script>
+<script>
     $('#buy-btn').click(function () {
-        var existingItems = JSON.parse(sessionStorage.getItem('items')) || [];
-        console.log("buying items", existingItems)
+        
 
         req_body = {
-            'items': existingItems,
             'sp_id': $("#sp-id").val(),
             'customer_id': $('#customer-id').val()
         }
@@ -133,6 +131,6 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
 
     });
-</script> -->
+</script>
 
 </html>

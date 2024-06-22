@@ -36,8 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         INSERT INTO order_items (order_id, product_id, amount) VALUES
         (@order_id, $product_id, $amount);";
 
-        echo $sql;
-
         $res = $conn->multi_query($sql);
     } else if ($order->num_rows == 1) {
 
