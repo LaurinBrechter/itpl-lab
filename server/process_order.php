@@ -1,26 +1,5 @@
 <?php
 
-function safe_query($conn, $sql)
-{
-    try {
-        $res = $conn->query($sql);
-        return $res;
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo '{"success": false, "msg":' . $e->getMessage() . '}';
-        $conn->rollback();
-        exit(1);
-    }
-
-    if (!$res) {
-        http_response_code(500);
-        echo '{"success": false, "msg":' . $conn->error . '}';
-        $conn->rollback();
-        exit(1);
-    }
-}
-
-
 include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/server/send-message.php';
 
@@ -225,6 +204,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $production_amount = $to_produce_store;
             }
 
+            $sql = "INSERT INTO 
+            production_plan (product_id, amount, order_id, status, priority, target, facility_id) 
+            VALUES ($product_id, $production_amount, $order_id, 'PENDING', 
+            '$priority_production', '$detail', $min_facility_id)";
+            $res = safe_query($conn, $sql);
+
             // customer production gets high or medium prio depending on customer's vip status
             if ($to_produce_cust > 0) {
                 $priority_production = $priority;
@@ -239,15 +224,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $res = safe_query($conn, $sql);
 
+
+
             // only reachable if the query doesn't fail.
-            $total_workload_arr[$idx]['total_current_workload'] += $row["production_duration"];
+            $total_workload_arr[$idx]['total_current_workload'] += $row["production_duration"]*$production_amount;
         }
     }
-
-    // send a websocket event such that the production facility can update its view
-    // if ($isProductionOrder) {
-    //     sendMsg('{"success": true, "data": "Order placed and production planned"' . $order_id . '}');
-    // }
 
     echo '{"success": true, "msg": "Order placed and production planned", "order_id": ' . $order_id . '}';
     $conn->commit();
