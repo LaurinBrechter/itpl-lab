@@ -13,7 +13,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
     $payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER', 'MANAGEMENT']);
     $role = $payload->role;
-    if ($role) {
+    if ($role == "SERVICE_PARTNER") {
         include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
     } else {
         include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php';
