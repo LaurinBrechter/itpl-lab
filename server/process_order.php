@@ -60,18 +60,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $production_plan_sql = "with oi as (
         select * from order_items where order_id = $order_id
     ),
+    in_production as (
+    	select sum(amount) as amount_in_production, product_id
+    	from production_plan pp
+		where status = 'PENDING' and target = 'STORAGE'
+    	group by product_id
+    ),
     product_storage as (
         select 
             oi.order_id, 
             oi.product_id, 
             oi.amount, 
             p.storage_amount, 
-            p.storage_amount - oi.amount as new_amount,
-            p.production_duration
+            ip.amount_in_production + p.storage_amount - oi.amount as new_amount,
+            p.production_duration,
+            ip.amount_in_production
         from oi
         left join test_db.products p on oi.product_id = p.id
+        left join in_production ip on oi.product_id = ip.product_id
     )
-    select  
+    select 
         if(ps.new_amount >= 0, ps.amount, ps.storage_amount) as to_send,
         case 
             when ps.new_amount - 10 >= 0 then 0
@@ -80,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         end as to_produce_store,
         if(ps.new_amount < 0, abs(ps.new_amount), 0) as to_produce_cust,
         ps.*
-    from product_storage ps";
+    from product_storage ps;";
 
     $production_plan = safe_query($conn, $production_plan_sql);
 
