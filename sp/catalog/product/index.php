@@ -86,7 +86,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
             console.log(req_body);
 
             $.post('/server/add_to_cart.php', JSON.stringify(req_body), function(data) {
-                console.log(data);
+                data = JSON.parse(data);
 
                 if (data.success === false) {
                     alert(data.msg);
