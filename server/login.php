@@ -25,7 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $jwt_payload = [
             'user_id' => $user['id'],
             'exp' => time() + 3600, // Token expiration time (1 hour)
-            'role' => $user['role']
+            'role' => $user['role'],
+            'username' => $user["username"]
         ];
         $payload_enc = json_encode($jwt_payload);
         $base64UrlPayload = str_replace(['+', '/', '='], ['-', '_', ''], base64_encode($payload_enc));

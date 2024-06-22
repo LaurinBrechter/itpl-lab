@@ -1,4 +1,5 @@
 <?php
+$req_jquery = true;
 include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
 
@@ -7,18 +8,23 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     <?php
 
 
-include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
-include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
+    include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
-$payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER', 'MANAGEMENT']);
-if ($payload->role == 'SERVICE_PARTNER') {
-    include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
-} else {
-    include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php';
-}
-$user_id = $payload->user_id;
-$product_id = $_GET["id"];
+    $payload = getJwtPayload($_COOKIE["jwt"], ['SERVICE_PARTNER', 'MANAGEMENT']);
+    $role = $payload->role;
+    if ($role == "SERVICE_PARTNER") {
+        include $_SERVER['DOCUMENT_ROOT'] . '/sp/sp_navbar.php';
+    } else {
+        include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php';
+    }
+    $user_id = $payload->user_id;
+    $product_id = $_GET["id"];
     $sql = "SELECT * FROM products WHERE id = $product_id;";
+
+    if  ($role == "SERVICE_PARTNER") {
+        $sp_id = $conn->query("SELECT * FROM service_partners WHERE user_id = $user_id;")->fetch_assoc()['id'];
+    }
 
     // check if product_id is an int
     if (!is_numeric($product_id)) {
@@ -50,10 +56,11 @@ $product_id = $_GET["id"];
     ?>
     <img src="https://placehold.co/500x300">
 
-    <form method="get" onsubmit="event.preventDefault(); saveToSessionStorage()">
+    <form method="get" onsubmit="event.preventDefault(); add_to_cart()">
         <input type="hidden" name="product_name" value="<?php echo $row['name']; ?>">
         <input type="hidden" name="price" value="<?php echo $row['price']; ?>">
         <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
+        <input type="hidden" id="sp-id" name="sp-id" value="<?php echo $sp_id ?>">
         <?php if ($payload->role != "MANAGEMENT") {
             echo '<input type="number" name="amount" placeholder="Amount" min="1" step="1">';
             echo '<button type="submit">Add to Cart</button>';
@@ -61,27 +68,33 @@ $product_id = $_GET["id"];
     </form>
 
     <script>
-        function saveToSessionStorage() {
+        function add_to_cart() {
             console.log('saving to session storage');
             var amount = document.querySelector('input[name="amount"]').value;
             var productId = document.querySelector('input[name="product_id"]').value;
             var productName = document.querySelector('input[name="product_name"]').value;
             var price = document.querySelector('input[name="price"]').value;
-            var existingItems = JSON.parse(sessionStorage.getItem('items')) || [];
-            var existingItem = existingItems.find(item => item.productId === productId);
-            if (existingItem) {
-                existingItem.amount = parseInt(existingItem.amount) + parseInt(amount);
-            } else {
-                var newItem = {
+
+            let req_body = {
+                item: {
                     amount: amount,
-                    productId: productId,
-                    productName: productName,
-                    price: price
-                };
-                existingItems.push(newItem);
+                    productId: productId
+                },
+                sp_id: document.querySelector('input[name="sp-id"]').value
             }
-            sessionStorage.setItem('items', JSON.stringify(existingItems));
-            alert(`Added ${amount} of ${productName} to cart`);
+
+            console.log(req_body);
+
+            $.post('/server/add_to_cart.php', JSON.stringify(req_body), function(data) {
+                data = JSON.parse(data);
+
+                if (data.success === false) {
+                    alert(data.msg);
+                    return;
+                } else if (data.success === true) {
+                    alert('Added to cart');
+                }
+            });
         }
     </script>
 </body>

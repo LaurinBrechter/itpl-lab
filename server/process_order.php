@@ -1,28 +1,8 @@
 <?php
 
-function safe_query($conn, $sql)
-{
-    try {
-        $res = $conn->query($sql);
-        return $res;
-    } catch (Exception $e) {
-        http_response_code(500);
-        echo '{"success": false, "msg":' . $e->getMessage() . '}';
-        $conn->rollback();
-        exit(1);
-    }
-
-    if (!$res) {
-        http_response_code(500);
-        echo '{"success": false, "msg":' . $conn->error . '}';
-        $conn->rollback();
-        exit(1);
-    }
-}
-
-
 include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/server/send-message.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/safe_query.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -37,19 +17,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $data = $_POST;
     }
 
-    // request body: {"items": [{"amount":"10","productId":"7"}], "sp_id": 1, "customer_id": 1}
+    // request body: {"sp_id": 1, "customer_id": 1}
 
-    $items = $data["items"];
-    $sql_order_items = "INSERT INTO order_items (order_id, product_id, amount) VALUES ";
-    foreach ($items as $item) {
-        $productId = $item['productId'];
-        $amount = $item['amount'];
-        $sql_order_items .= "(LAST_INSERT_ID(), $productId, $amount), ";
-    }
-    $sql_order_items = rtrim($sql_order_items, ", ");
-
+    
     $sp_id = $data['sp_id'];
     $customer_id = $data['customer_id'];
+
+    $sql = "select * from orders where sp_id = $sp_id and status = 'IN_BASKET';";
+    $conn->begin_transaction();
+
+    $order = safe_query($conn, $sql);
+    $order_id = $order->fetch_assoc()['id'];
+
+    if ($order->num_rows === 0) {
+        http_response_code(404);
+        echo '{"success": false, "msg": "basket not found for service_partner"}';
+        exit(1);
+    }
 
     $customer = $conn->query("SELECT * FROM customers WHERE id = $customer_id;");
     $customer = $customer->fetch_assoc();
@@ -69,41 +53,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
 
-    $conn->begin_transaction();
 
-    $sql = "
-    INSERT INTO orders (sp_id, status, customer_id, priority) 
-    VALUES ($sp_id, 'PENDING', $customer_id, '$priority');
-    SET @order_id = LAST_INSERT_ID();
-    $sql_order_items;";
-
-
-    $res = $conn->multi_query($sql);
-
-    while ($conn->next_result()) {
-        ;
-        // if (!$conn->store_result()) {
-        //     echo '{"success": false, "msg":' . $conn->error . '}';
-        //     $conn->rollback();
-        //     exit(1);
-        // }
-    } // flush multi_queries
-
-
-    if ($conn->affected_rows === -1) {
-        echo "Error: " . $conn->error;
-        $conn->rollback();
-        exit(1);
-    } else {
-        $order_id_query = "SELECT @order_id as order_id";
-        $order_id_result = $conn->query($order_id_query);
-        $order_id_row = $order_id_result->fetch_assoc();
-        $order_id = $order_id_row['order_id'];
-    }
-
+    $sql = "update orders set status = 'PENDING', customer_id = $customer_id, priority = '$priority' where id = $order_id";
+    safe_query($conn, $sql);
 
     $production_plan_sql = "with oi as (
         select * from order_items where order_id = $order_id
+    ),
+    in_production as (
+    	select sum(amount) as amount_in_production, product_id
+    	from production_plan pp
+		where status = 'PENDING' and target = 'STORAGE'
+    	group by product_id
     ),
     product_storage as (
         select 
@@ -111,12 +72,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             oi.product_id, 
             oi.amount, 
             p.storage_amount, 
-            p.storage_amount - oi.amount as new_amount,
-            p.production_duration
+            ip.amount_in_production + p.storage_amount - oi.amount as new_amount,
+            p.production_duration,
+            ip.amount_in_production
         from oi
         left join test_db.products p on oi.product_id = p.id
+        left join in_production ip on oi.product_id = ip.product_id
     )
-    select  
+    select 
         if(ps.new_amount >= 0, ps.amount, ps.storage_amount) as to_send,
         case 
             when ps.new_amount - 10 >= 0 then 0
@@ -125,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         end as to_produce_store,
         if(ps.new_amount < 0, abs(ps.new_amount), 0) as to_produce_cust,
         ps.*
-    from product_storage ps";
+    from product_storage ps;";
 
     $production_plan = safe_query($conn, $production_plan_sql);
 
@@ -225,6 +188,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $production_amount = $to_produce_store;
             }
 
+            $sql = "INSERT INTO 
+            production_plan (product_id, amount, order_id, status, priority, target, facility_id) 
+            VALUES ($product_id, $production_amount, $order_id, 'PENDING', 
+            '$priority_production', '$detail', $min_facility_id)";
+            $res = safe_query($conn, $sql);
+
             // customer production gets high or medium prio depending on customer's vip status
             if ($to_produce_cust > 0) {
                 $priority_production = $priority;
@@ -239,15 +208,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             $res = safe_query($conn, $sql);
 
+
+
             // only reachable if the query doesn't fail.
-            $total_workload_arr[$idx]['total_current_workload'] += $row["production_duration"];
+            $total_workload_arr[$idx]['total_current_workload'] += $row["production_duration"]*$production_amount;
         }
     }
-
-    // send a websocket event such that the production facility can update its view
-    // if ($isProductionOrder) {
-    //     sendMsg('{"success": true, "data": "Order placed and production planned"' . $order_id . '}');
-    // }
 
     echo '{"success": true, "msg": "Order placed and production planned", "order_id": ' . $order_id . '}';
     $conn->commit();

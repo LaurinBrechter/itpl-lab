@@ -51,7 +51,7 @@ CREATE table orders (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     sp_id INT, -- service partner id
     customer_id INT,
-    status ENUM('PENDING', 'COMPLETED', 'CANCELLED'),
+    status ENUM('PENDING', 'COMPLETED', 'CANCELLED', 'IN_BASKET'),
     priority ENUM('LOW', 'MEDIUM', 'HIGH'),
     CONSTRAINT `customer_id` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
     CONSTRAINT `sp_id` FOREIGN KEY (`sp_id`) REFERENCES `service_partners` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
