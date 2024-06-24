@@ -32,8 +32,6 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     $workload = $conn->query($workload_query);
     $orders_daily = $conn->query($order_query);
 
-    print_r($orders);
-
     $labels_wl = [];
     $data_wl = [];
 

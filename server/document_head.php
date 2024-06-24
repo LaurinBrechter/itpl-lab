@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $title; ?></title>
     <style>
-        <?php include include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; ?>
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; ?>
     </style>
     <?php
     if ($req_jquery) {

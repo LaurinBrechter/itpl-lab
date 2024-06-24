@@ -35,8 +35,8 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     <div class="page-container">
         <div class="table-container">
             <?php
-            $search_term = $_GET["sku"];
-            $category = $_GET["category"];
+            $search_term = $_GET["sku"] ?? null;
+            $category = $_GET["category"] ?? null;
 
             $sql = "SELECT * FROM test_db.products where true";
 
