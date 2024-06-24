@@ -14,6 +14,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
         display: flex;
         justify-content: center;
         align-items: center;
+		
     }
     .login-container {
         padding: 20px;
@@ -23,10 +24,11 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     .login-form {
         display: flex;
         flex-direction: column;
+		background-color: #00142d;
     }
     .login-form label {
         font-weight: bold;
-        color: black;
+        color: white;
     }
     .login-form input[type="text"],
     .login-form input[type="password"] {
@@ -40,7 +42,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     }
     .login-form button {
         background-color: #007bff;
-        color: black;
+        color: white;
         padding: 10px;
         border: none;
         border-radius: 5px;
@@ -55,7 +57,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 <body>
     <div class="login-container">
         <form action="login.php" method="POST" class="login-form">
-            <h1 style="color: black;">Login</h1>
+            <h1 style="color: white;">Login</h1>
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required>
             <label for="password">Password:</label>
