@@ -3,11 +3,8 @@ $req_jquery = true;
 include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
 
-
 <body>
     <?php
-
-
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
@@ -47,22 +44,23 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
         die();
     }
 
+    echo "<div class='product-details'>";
     echo "<h1>" . $row['name'] . "</h1>";
     echo "<p>" . $row['description'] . "</p>";
     echo "<p>Price: $" . $row['price'] . "</p>";
     echo "<p>Quantity Available: " . $row['storage_amount'] . "</p>";
     echo "<p>Est. Delivery: 1 week</p>";
-
+    echo "<img src='https://placehold.co/500x300' alt='Product Image'>";
+    echo "</div>";
     ?>
-    <img src="https://placehold.co/500x300">
 
-    <form method="get" onsubmit="event.preventDefault(); add_to_cart()">
+    <form method="get" onsubmit="event.preventDefault(); add_to_cart()" class="add-to-cart-form">
         <input type="hidden" name="product_name" value="<?php echo $row['name']; ?>">
         <input type="hidden" name="price" value="<?php echo $row['price']; ?>">
         <input type="hidden" name="product_id" value="<?php echo $product_id; ?>">
         <input type="hidden" id="sp-id" name="sp-id" value="<?php echo $sp_id ?>">
         <?php if ($payload->role != "MANAGEMENT") {
-            echo '<input type="number" name="amount" placeholder="Amount" min="1" step="1">';
+            echo '<input type="number" name="amount" placeholder="Amount" min="1" step="1" required>';
             echo '<button type="submit">Add to Cart</button>';
         } ?>
     </form>
@@ -98,8 +96,4 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
         }
     </script>
 </body>
-</body>
-
-
-
 </html>
