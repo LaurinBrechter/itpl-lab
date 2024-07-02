@@ -14,7 +14,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     $payload = getJwtPayload($_COOKIE["jwt"], ['MANAGEMENT']);
     ?>
     <h1>Neuen Servicepartner hinzufügen</h1>
-    <form action="management/add_servicepartner.php" method="post">
+    <form action="/management/add_servicepartner.php" method="post">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required><br><br>
         <label for="tax_number">Steuernummer:</label>
