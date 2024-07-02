@@ -249,6 +249,7 @@ form {
         width: 100%;
         margin-bottom: 15px;
         box-sizing: border-box; 
+		
     }
     .login-form button {
         background-color: #007bff;
@@ -346,6 +347,7 @@ form {
     justify-content: center;
     gap: 40px;
     padding: 20px;
+
 }
 
 .form-container {
@@ -355,17 +357,20 @@ form {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px; 
+
 }
 
 .form-container h2 {
     text-align: center;
     margin-bottom: 20px;
+	color: white;
 }
 
 .form-container label {
     display: block;
     margin-bottom: 5px;
     font-weight: bold;
+    color: white;
 }
 
 .form-container input[type="text"],
@@ -390,6 +395,7 @@ form {
     cursor: pointer;
     display: inline-block;
     transition: background-color 0.3s;
+	
 }
 
 .form-container input[type="submit"]:hover {
