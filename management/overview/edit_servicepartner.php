@@ -1,4 +1,7 @@
 <?php
+$title = "Management Dashboard";
+$req_jquery = true;
+include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php';
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {

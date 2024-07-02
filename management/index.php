@@ -1,24 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Management Dashboard</title>
-    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
-    <style>
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/style.css'; ?>
-    </style>
-</head>
+<?php
+$title = "Hinzufügen";
+$req_jquery = true;
+include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
+?>
 
 <body>
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php';
-
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
-
     $payload = getJwtPayload($_COOKIE["jwt"], ['MANAGEMENT']);
-
     ?>
     <h1>Neuen Servicepartner hinzufügen</h1>
     <form action="management/add_servicepartner.php" method="post">

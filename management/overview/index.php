@@ -1,21 +1,14 @@
 <!DOCTYPE html>
 <html lang="de">
-<head>
-    <meta charset="UTF-8">
-    <title>Übersicht der Daten</title>
-    <style>
-        <?php
-        include $_SERVER['DOCUMENT_ROOT'] . '/style.css';
-        include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
-        ?>
-        
-    </style>
-</head>
+<?php
+$title = "Übersicht";
+$req_jquery = true;
+include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
+?>
 <body>
     <?php include $_SERVER['DOCUMENT_ROOT'] . '/management/mgmt_navbar.php'; 
 	include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
     $payload = getJwtPayload($_COOKIE["jwt"], ['MANAGEMENT']);
-        
     ?>
     <h1>Übersicht der Kunden und Servicepartner</h1>
     <div class="css-sucks">
