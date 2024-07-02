@@ -92,7 +92,7 @@ input[type=number] {
 }
 
 .navbar .logo {
-    background-image: url('/Firefly 20240508165455.png');
+    background-image: url('/images/Firefly 20240508165455.png');
     background-size: contain;
     background-repeat: no-repeat;
     height: 70px;
@@ -225,7 +225,7 @@ form {
         margin: 0;
         padding: 0;
         height: 100vh;
-        background: url('/Login.jpg') no-repeat center center fixed;
+        background: url('/images/Login.jpg') no-repeat center center fixed;
         background-size: cover;
         display: flex;
         justify-content: center;
