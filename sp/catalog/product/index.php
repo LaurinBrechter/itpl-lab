@@ -1,4 +1,5 @@
 <?php
+$title = "Details";
 $req_jquery = true;
 include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 ?>
