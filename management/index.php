@@ -40,7 +40,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     </form>
 
     <h1>Neuen Kunden hinzufügen</h1>
-    <form action="Management/add_customer.php" method="post">
+    <form action="/management/add_customer.php" method="post">
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" required><br><br>
         <label for="street">Straße:</label>
