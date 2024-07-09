@@ -45,7 +45,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                     } else if (res.role === 'PRODUCTION') {
                         window.location.href = '/production';
                     } else if (res.role === 'MANAGEMENT') {
-                        window.location.href = '/management';
+                        window.location.href = '/management/overview';
                     }
                 } else {
                     alert("Wrong username or password. Please try again.");
