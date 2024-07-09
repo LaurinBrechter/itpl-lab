@@ -7,6 +7,7 @@
             <div><a href="/sp/orders/index.php">Orders</a></div>
             <div><a href="/sp/catalog/index.php">Catalog</a></div>
             <div><a href="/sp/checkout/index.php">Checkout</a></div>
+            <div><a href="/">Logout</a></div>
         </div>
     </ul>
 </nav>

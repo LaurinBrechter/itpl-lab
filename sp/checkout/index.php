@@ -122,8 +122,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
             if (data["success"] === true) {
                 alert("Order successful");
-                sessionStorage.setItem('items', JSON.stringify([]));
-                renderItems();
+                location.reload();
             } else if (data["success"] === false) {
                 alert("Order failed: " + data["msg"]);
             }

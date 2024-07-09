@@ -51,7 +51,6 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                     <th>Order Id</th>
                     <th>Product name</th>
                     <th>Order Date</th>
-                    <th>Est. Delivery</th>
                     <th>Status</th>
                     <th>Amount</th>
                     <th>Action</th>
@@ -71,7 +70,6 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                         echo "<td>" . $row['order_id'] . "</td>";
                         echo "<td>" . $row['name'] . "</td>";
                         echo "<td>" . $row['created_at'] . "</td>";
-                        echo "<td>" . $row['est_delivery'] . "</td>";
                         echo "<td>" . $row['status'] . "</td>";
                         echo "<td>" . $row['amount'] . "</td>";
                         if ($row["status"] == "PENDING") {

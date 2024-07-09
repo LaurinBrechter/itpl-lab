@@ -72,9 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             oi.product_id, 
             oi.amount, 
             p.storage_amount, 
-            ip.amount_in_production + p.storage_amount - oi.amount as new_amount,
+            COALESCE(ip.amount_in_production,0) + p.storage_amount - oi.amount as new_amount,
             p.production_duration,
-            ip.amount_in_production
+            COALESCE(ip.amount_in_production,0)
         from oi
         left join test_db.products p on oi.product_id = p.id
         left join in_production ip on oi.product_id = ip.product_id
