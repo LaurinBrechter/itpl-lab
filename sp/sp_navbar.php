@@ -1,6 +1,6 @@
 <nav>
     <ul class="navbar">
-        <img src="/Firefly 20240508165455.png" alt="logo" width="30px" height="40px">
+        <div class="logo"></div>
         <h1>Service Partner</h1>
         Logged in as: <?php echo $payload->username ?>
         <div class="navitems">

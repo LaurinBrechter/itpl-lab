@@ -91,15 +91,12 @@ input[type=number] {
     gap: 10px;
 }
 
-/* Füge das Logo als Hintergrundbild hinzu */
 .navbar .logo {
-    background-image: url('/Firefly 20240508165455.png');
+    background-image: url('/images/Firefly 20240508165455.png');
     background-size: contain;
     background-repeat: no-repeat;
     height: 70px;
-    /* Höhe des Logos */
     width: 100px;
-    /* Breite des Logos, anpassen nach Bedarf */
 }
 
 .navbar h1 {
@@ -218,3 +215,192 @@ form {
     background-color: green;
     border: 2px solid red
 }
+
+.login-container {
+        padding: 20px;
+        border-radius: 10px;
+        max-width: 300px;
+    }
+	.login-body {
+        margin: 0;
+        padding: 0;
+        height: 100vh;
+        background: url('/images/Login.jpg') no-repeat center center fixed;
+        background-size: cover;
+        display: flex;
+        justify-content: center;
+        align-items: center;	
+    }
+    .login-form {
+        display: flex;
+        flex-direction: column;
+		background-color: #00142d;
+    }
+    .login-form label {
+        font-weight: bold;
+        color: white;
+    }
+    .login-form input[type="text"],
+    .login-form input[type="password"] {
+        color: black; 
+        border: 2px solid #001f3f; 
+        padding: 10px;
+        border-radius: 5px;
+        width: 100%;
+        margin-bottom: 15px;
+        box-sizing: border-box; 
+		
+    }
+    .login-form button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        width: 100%;
+        cursor: pointer;
+    }
+    .login-form button:hover {
+        background-color: #0056b3;
+    }
+
+.product-page {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+}
+
+.product-details {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    text-align: center;
+}
+
+.product-details h1 {
+    color: #333;
+    font-size: 2em;
+    margin-bottom: 10px;
+}
+
+.product-details p {
+    color: #666;
+    font-size: 1.2em;
+    margin: 5px 0;
+}
+
+.product-details img {
+    max-width: 100%;
+    height: auto;
+    margin: 20px 0;
+}
+
+.add-to-cart-form {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 300px;
+    text-align: center;
+}
+
+.add-to-cart-form input[type="number"] {
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #001f3f;
+    border-radius: 5px;
+    width: calc(100% - 24px);
+}
+
+.add-to-cart-form button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s;
+}
+
+.add-to-cart-form button:hover {
+    background-color: #0056b3;
+}
+
+.error-message {
+    background-color: #ffdddd;
+    color: #d8000c;
+    padding: 20px;
+    border-left: 6px solid #f44336;
+    margin: 20px auto;
+    border-radius: 5px;
+    max-width: 600px;
+    text-align: center;
+}
+
+.forms-container {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    padding: 20px;
+
+}
+
+.form-container {
+    background-color: #00142d;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px; 
+
+}
+
+.form-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+	color: white;
+}
+
+.form-container label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: white;
+}
+
+.form-container input[type="text"],
+.form-container input[type="number"],
+.form-container select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-container input[type="submit"] {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s;
+	
+}
+
+.form-container input[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+
+

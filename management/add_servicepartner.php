@@ -15,8 +15,10 @@ $country = $_POST['country'];
 // User in Datenbank anlegen
 $sql = "INSERT INTO users (username, role) VALUES (?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ss", $name, 'SERVICE_PARTNER');
+$role = 'SERVICE_PARTNER';
+$stmt->bind_param("ss", $name, $role);
 $stmt->execute();
+$user_id = $stmt->insert_id; // Die ID des gerade eingefügten Benutzers erhalten
 
 // Adresse in die Datenbank einfügen
 $sql = "INSERT INTO addresses (street, house_number, city, state, zip, country) VALUES (?, ?, ?, ?, ?, ?)";
@@ -26,9 +28,9 @@ $stmt->execute();
 $address_id = $stmt->insert_id; // Die ID der gerade eingefügten Adresse erhalten
 
 // Servicepartner in die Datenbank einfügen
-$sql = "INSERT INTO service_partners (name, tax_number, address_id, isInternal) VALUES (?, ?, ?, ?)";
+$sql = "INSERT INTO service_partners (name, tax_number, address_id, isInternal, user_id) VALUES (?, ?, ?, ?, ?)";
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssii", $name, $tax_number, $address_id, $isInternal);
+$stmt->bind_param("ssiii", $name, $tax_number, $address_id, $isInternal, $user_id);
 $stmt->execute();
 
 if ($stmt->affected_rows > 0) {
@@ -39,3 +41,4 @@ if ($stmt->affected_rows > 0) {
 
 $stmt->close();
 $conn->close();
+?>
