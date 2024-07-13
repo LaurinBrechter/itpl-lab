@@ -11,6 +11,8 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
     include $_SERVER['DOCUMENT_ROOT'] . '/server/decode_jwt.php';
 
+    $payload = getJwtPayload($_COOKIE["jwt"], ['MANAGEMENT']);
+
     $workload_query = "with workload as (
         select
             pp.amount * p.production_duration as production_duration,
