@@ -27,7 +27,13 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
             echo "<td>" . $row['id'] . "</td>";
             echo "<td>" . $row['amount'] . "</td>";
             echo "<td>" . $row['created_at'] . "</td>";
-            echo "<td>" . $row['status'] . "</td>";
+            if ($row["status"] == "CANCELLED") {
+                echo "<td class='cell-error'>" . $row['status'] . "</td>";
+            } else if ($row["status"] == "COMPLETED") {
+                echo "<td class='cell-success'>" . $row['status'] . "</td>";
+            } else {
+                echo "<td>" . $row['status'] . "</td>";
+            }
             echo "<td>" . $row['priority'] . "</td>";
             echo "<td>" . $row['target'] . "</td>";
             echo "<td>" . $row["name"] . "</td>";
@@ -68,6 +74,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     $completed_items = [];
     $in_progress_items = [];
     $pending_items = [];
+    $cancelled_items = [];
 
     if ($production_plan->num_rows > 0) {
         while ($row = $production_plan->fetch_assoc()) {
@@ -77,6 +84,8 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                 array_push($completed_items, $row);
             } elseif ($row["status"] == "IN_PROGRESS") {
                 array_push($in_progress_items, $row);
+            } elseif ($row["status"] == "CANCELLED") {
+                array_push($cancelled_items, $row);
             }
         }
 
@@ -117,6 +126,14 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
             echo "<p>No completed items</p>";
         } else {
         render_production_plan($completed_items); 
+        }
+        ?>
+        <h2>Cancelled Items</h2>
+        <?php 
+        if (empty($cancelled_items)) {
+            echo "<p>No cancelled items</p>";
+        } else {
+        render_production_plan($cancelled_items); 
         }
         ?>
     </div>

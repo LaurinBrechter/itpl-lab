@@ -360,6 +360,11 @@ form {
 
 }
 
+.form-container form {
+    
+    background-color: #00142d;
+}
+
 .form-container h2 {
     text-align: center;
     margin-bottom: 20px;
@@ -402,5 +407,13 @@ form {
     background-color: #0056b3;
 }
 
+.cell-success {
+    background-color: #d4edda;
+    color: #155724;
+}
 
+.cell-error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
 

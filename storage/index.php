@@ -115,7 +115,14 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                     }
                     echo "</td>";
                     echo "<td>" . $row["address"] . "</td>";
-                    echo "<td>" . $row["detail"] . "</td>";
+                    // echo "<td>" . $row["detail"] . "</td>";
+                    if ($row["detail"] == "CANCELLED") {
+                        echo "<td class='cell-error'>" . $row['detail'] . "</td>";
+                    } else if ($row["detail"] == "SHIPPED") {
+                        echo "<td class='cell-success'>" . $row['detail'] . "</td>";
+                    } else {
+                        echo "<td>" . $row['detail'] . "</td>";
+                    }
                     if ($row["detail"] == "RESERVED") {
                         echo "<td><button onclick=\"confirmShipment(" . $row["id"] . ")\">Confirm Shipment</button></td>";
                     } else {

@@ -70,7 +70,13 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                         echo "<td>" . $row['order_id'] . "</td>";
                         echo "<td>" . $row['name'] . "</td>";
                         echo "<td>" . $row['created_at'] . "</td>";
-                        echo "<td>" . $row['status'] . "</td>";
+                        if ($row["status"] == "CANCELLED") {
+                            echo "<td class='cell-error'>" . $row['status'] . "</td>";
+                        } else if ($row["status"] == "PENDING") {
+                            echo "<td class='cell-warning'>" . $row['status'] . "</td>";
+                        } else {
+                            echo "<td class='cell-success'>" . $row['status'] . "</td>";
+                        }
                         echo "<td>" . $row['amount'] . "</td>";
                         if ($row["status"] == "PENDING") {
                             echo "<td><button onclick='cancelOrder(" . $row["order_id"] . ")'>Cancel</button></td>";
