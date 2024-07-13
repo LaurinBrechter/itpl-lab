@@ -33,7 +33,8 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
             sl.product_id, 
             sl.detail, 
             sl.created_at,
-            CONCAT(a.street, ', ', a.house_number, ', ', a.city, ', ', a.zip, ', ', a.country) as address 
+            CONCAT(a.street, ', ', a.house_number, ', ', a.city, ', ', a.zip, ', ', a.country) as address,
+            oi.amount as quant_ordered
         FROM (   
             SELECT * 
             FROM storage_logs 
@@ -42,6 +43,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
         left join orders o on sl.order_id = o.id
         left join customers c on o.customer_id = c.id
         left join addresses a on c.address_id = a.id
+        left join order_items oi on sl.product_id = oi.product_id and sl.order_id = oi.order_id
         order by sl.detail asc, sl.created_at asc;
     "
     );
@@ -120,10 +122,16 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                         echo "<td class='cell-error'>" . $row['detail'] . "</td>";
                     } else if ($row["detail"] == "SHIPPED") {
                         echo "<td class='cell-success'>" . $row['detail'] . "</td>";
+                    } else if ($row["detail"] == "RESERVED") {
+                        if ($row["quant_ordered"] == abs($row["amount"])) {
+                            echo "<td class='cell-success'>" . $row['detail'] . " (ready)</td>" . $row["quant_ordered"];
+                        } else {
+                            echo "<td class='cell-warning'>" . $row['detail'] . " (awaiting production)</td>";
+                        }
                     } else {
-                        echo "<td>" . $row['detail'] . "</td>";
+                        echo "<td>" . $row["detail"] . "</td>";
                     }
-                    if ($row["detail"] == "RESERVED") {
+                    if ($row["detail"] == "RESERVED" && $row["quant_ordered"] == abs($row["amount"])) {
                         echo "<td><button onclick=\"confirmShipment(" . $row["id"] . ")\">Confirm Shipment</button></td>";
                     } else {
                         echo "<td></td>";

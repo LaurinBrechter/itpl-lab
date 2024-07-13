@@ -29,7 +29,8 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     $order_items = $conn->query("SELECT 
     oi.order_id,
     o.created_at,
-    o.status,
+    oi.status as order_item_status,
+    o.status as order_status,
     oi.amount,
     oi.product_id,
     p.name as name
@@ -70,15 +71,15 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                         echo "<td>" . $row['order_id'] . "</td>";
                         echo "<td>" . $row['name'] . "</td>";
                         echo "<td>" . $row['created_at'] . "</td>";
-                        if ($row["status"] == "CANCELLED") {
-                            echo "<td class='cell-error'>" . $row['status'] . "</td>";
-                        } else if ($row["status"] == "PENDING") {
-                            echo "<td class='cell-warning'>" . $row['status'] . "</td>";
+                        if ($row["order_item_status"] == "COMPLETED") {
+                            echo "<td class='cell-success'>" . $row['order_item_status'] . "</td>";
+                        } else if ($row["order_status"] == "CANCELLED") {
+                            echo "<td class='cell-error'>" . $row['order_status'] . "</td>";
                         } else {
-                            echo "<td class='cell-success'>" . $row['status'] . "</td>";
+                            echo "<td>" . $row['order_status'] . "</td>";
                         }
                         echo "<td>" . $row['amount'] . "</td>";
-                        if ($row["status"] == "PENDING") {
+                        if ($row["order_status"] == "PENDING" && $row["order_item_status"] == "PENDING") {
                             echo "<td><button onclick='cancelOrder(" . $row["order_id"] . ")'>Cancel</button></td>";
                         }
                         echo "</tr>";

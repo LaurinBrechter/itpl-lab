@@ -1,9 +1,12 @@
 <?php
 
+include $_SERVER['DOCUMENT_ROOT'] . '/server/safe_query.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
+    $conn->autocommit(FALSE);
+    $conn->begin_transaction();
 
     $requestBody = file_get_contents('php://input');
     $data = json_decode($requestBody, true);
@@ -12,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $sql = "UPDATE production_plan SET status = 'COMPLETED' WHERE id = $production_item_id";
 
-    $conn->query($sql);
+    safe_query($conn, $sql);
 
     $production_item = $conn->query("SELECT * from production_plan where id = $production_item_id");
 
@@ -20,30 +23,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $row = $production_item->fetch_assoc();
         $target = $row['target'];
         $product_id = $row['product_id'];
-        $amount = $row['amount'];
-        if ($target == "STORAGE") {
-
-            // for now just select a random facility for storing the product
-            $storage_id_rand = $conn->query("select  
+        $amount_produced = $row['amount'];
+        $order_id = $row['order_id'];
+        
+        $storage_id_rand = $conn->query("select  
                 id
                 from production_facilities pf
                 order by rand()
                 limit 1;")->fetch_assoc()["id"];
+        
+        if ($target == "STORAGE") {
+
+            // for now just select a random facility for storing the product
+            
 
 
-            $sql = "START TRANSACTION; 
-                INSERT INTO storage_logs 
+            $sql = "INSERT INTO storage_logs 
                 (product_id, storage_id, order_id, amount, detail) 
-                VALUES ($product_id, $storage_id_rand, NULL, $amount, 'PRODUCTION_IN');
-                UPDATE products SET storage_amount = storage_amount + $amount WHERE id = $product_id;
-                COMMIT;";
+                VALUES ($product_id, $storage_id_rand, NULL, $amount_produced, 'PRODUCTION_IN');";
+            safe_query($conn, $sql);
+            safe_query($conn, "UPDATE products SET storage_amount = storage_amount + $amount_produced WHERE id = $product_id;");
+        } else if ($target == 'CUSTOMER') {
 
-            $conn->multi_query($sql);
-            echo $sql;
+            $sql = "SELECT * FROM storage_logs WHERE order_id = $order_id AND detail = 'RESERVED' AND product_id = $product_id";
+            $res = safe_query($conn, $sql);
+
+            if ($res->num_rows == 1) {
+                $row = $res->fetch_assoc();
+                $amount = $row["amount"];
+                $sql = "UPDATE storage_logs SET amount = amount - $amount_produced WHERE id = " . $row["id"];
+                safe_query($conn, $sql);
+            } else if ($res->num_rows > 1) {
+                http_response_code(500);
+                echo '{"success": false}';
+                $conn->rollback();
+                exit(1);
+            } else {
+                $sql = "INSERT INTO storage_logs 
+                (product_id, storage_id, order_id, amount, detail) 
+                VALUES 
+                    ($product_id, $storage_id_rand, $order_id, $amount_produced, 'RESERVED');";
+            safe_query($conn, $sql);
+            }
+
+            $sql = "INSERT INTO storage_logs 
+                (product_id, storage_id, order_id, amount, detail) 
+                VALUES 
+                    ($product_id, $storage_id_rand, $order_id, $amount_produced, 'PRODUCTION_IN');";
+            safe_query($conn, $sql);
+            echo "Production item not found";
+        } else {
+            http_response_code(500);
+            echo '{"success": false}';
         }
-    } else {
-        echo "Production item not found";
-    }
+    }   
+
+    $conn->commit();
+   
+    echo '{"success": true}';
+    
 
 
 }

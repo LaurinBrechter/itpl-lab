@@ -417,3 +417,7 @@ form {
     color: #721c24;
 }
 
+.cell-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}

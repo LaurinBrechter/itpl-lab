@@ -31,7 +31,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     FROM orders o
     JOIN order_items oi ON o.id = oi.order_id
     JOIN products p ON oi.product_id = p.id
-    WHERE sp_id = $sp_id AND status = 'IN_BASKET';");
+    WHERE sp_id = $sp_id AND o.status = 'IN_BASKET';");
 
     ?>
     <h1>Checkout</h1>

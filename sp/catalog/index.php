@@ -72,11 +72,11 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                     echo "<td>" . $row["name"] . "</td>";
                     echo "<td>" . $row["category"] . "</td>";
                     echo "<td>" . $row["price"] . "€</td>";
-                    echo "<td>" . $row["storage_amount"] . "</td>";
-                    // echo "<td>TODO</td>";
-                    // echo "<td>";
-                    // echo "<input type='number' id='quantity' name='quantity'>";
-                    // echo "</td>";
+                    if ($row["storage_amount"] == 0) {
+                        echo "<td class='cell-warning'>" . $row["storage_amount"] . "</td>";
+                    } else {
+                        echo "<td>" . $row["storage_amount"] . "</td>";
+                    }
                     echo "<td>1 week</td>";
                     echo "<td><a href='/sp/catalog/product?id=$sku'>Details</a></td>";
                     echo "</tr>";

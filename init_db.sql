@@ -74,7 +74,8 @@ CREATE TABLE order_items (
     order_id INT,
     product_id INT,
     amount INT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status enum('PENDING','COMPLETED') DEFAULT 'PENDING'
 );
 
 CREATE TABLE production_plan (

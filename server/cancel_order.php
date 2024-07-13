@@ -47,10 +47,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     // TODO add back amount
+    $sql = "SELECT * FROM storage_logs WHERE order_id = $order_id AND detail = 'RESERVED'";
+    $res = safe_query($conn, $sql);
+    while ($row = $res->fetch_assoc()) {
+        $product_id = $row["product_id"];
+        $amount = $row["amount"];
+        $sql = "UPDATE products SET storage_amount = storage_amount + $amount WHERE id = $product_id";
+        safe_query($conn, $sql);
+    }
 
 
     // TODO remove items from production plan?
-    $sql = "UPDATE production_plan SET status = 'CANCELLED' WHERE order_id = $order_id AND status = 'PENDING'";
+    $sql = "UPDATE production_plan SET status = 'CANCELLED' WHERE order_id = $order_id AND (status = 'PENDING' OR status = 'IN_PROGRESS')";
     $res = safe_query($conn, $sql);
 
 
