@@ -11,7 +11,13 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     // renderNotification("Thank You!", "success")
     ?>
 
+    <div class='notification-container' id="notification">
+        <div id="notification-message">
 
+        </div>
+        <button onclick="document.getElementById('notification').style.display = 'none';"
+            class="notification-close">X</button>
+    </div>
 
     <?php
 
@@ -171,5 +177,33 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
         });
     }
 </script>
+
+
+<script>
+        // $("#notification").hide()
+        // try {
+        let conn;
+        try {
+            conn = new WebSocket('ws://localhost:8080');
+            conn.onerror = function (error) {
+                $("#notification-message").html("Can't establish connection with websocket server, realtime features will be disabled.");
+            };
+        } catch (error) {
+            console.log("An unexpected error occurred: " + error.message);
+        }
+
+        conn.onopen = function (e) {
+            console.log("Connection established!");
+            $("#notification-message").html("Connection established with websocket server.");
+            $("#notification").show()
+        };
+
+        conn.onmessage = function (e) {
+            console.log(e.data);
+            const payload = JSON.parse(e.data);
+            $("#notification").show();
+            $("#notification-message").html(payload.message);
+        };
+    </script>
 
 </html>

@@ -152,8 +152,6 @@ form {
 }
 
 .notification-container {
-    height: 100px;
-    width: 200px;
     position: fixed;
     bottom: 50px;
     right: 50px;
@@ -161,13 +159,11 @@ form {
     color: white;
     padding: 10px;
     border-radius: 5px;
-
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    z-index: 9999;
 }
 
 .notification-close {
-    position: absolute;
-    top: 5px;
-    right: 5px;
     color: white;
     cursor: pointer;
 }
@@ -211,10 +207,6 @@ form {
     justify-content: center;
 }
 
-.notification-container {
-    background-color: green;
-    border: 2px solid red
-}
 
 .login-container {
         padding: 20px;

@@ -2,6 +2,7 @@
 
 include $_SERVER['DOCUMENT_ROOT'] . '/server/safe_query.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/server/database.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/server/send-message.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -79,9 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }   
 
     $conn->commit();
-   
-    echo '{"success": true}';
-    
 
+    sendMsg('{ "action": "reload", "message": "Production for order with id ' . $order_id . ' completed" }');
+    echo '{"success": true}';
 
 }
