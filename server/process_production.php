@@ -49,8 +49,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $sql = "SELECT * FROM storage_logs WHERE order_id = $order_id AND detail = 'RESERVED' AND product_id = $product_id";
             $res = safe_query($conn, $sql);
 
+
+            $row = $res->fetch_assoc();
+            $st_id = $row["storage_id"];
             if ($res->num_rows == 1) {
-                $row = $res->fetch_assoc();
                 $amount = $row["amount"];
                 $sql = "UPDATE storage_logs SET amount = amount - $amount_produced WHERE id = " . $row["id"];
                 safe_query($conn, $sql);
@@ -63,14 +65,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $sql = "INSERT INTO storage_logs 
                 (product_id, storage_id, order_id, amount, detail) 
                 VALUES 
-                    ($product_id, $storage_id_rand, $order_id, $amount_produced, 'RESERVED');";
+                    ($product_id, $st_id, $order_id, $amount_produced, 'RESERVED');";
             safe_query($conn, $sql);
             }
 
             $sql = "INSERT INTO storage_logs 
                 (product_id, storage_id, order_id, amount, detail) 
                 VALUES 
-                    ($product_id, $storage_id_rand, $order_id, $amount_produced, 'PRODUCTION_IN');";
+                    ($product_id, $st_id, $order_id, $amount_produced, 'PRODUCTION_IN');";
             safe_query($conn, $sql);
             echo "Production item not found";
         } else {
@@ -81,7 +83,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $conn->commit();
 
-    sendMsg('{ "action": "reload", "message": "Production for order with id ' . $order_id . ' completed" }');
+    try {
+        //code...
+        sendMsg('{ "action": "reload", "message": "Production for order with id ' . $order_id . ' completed" }');
+    } catch (\Throwable $th) {
+        //throw $th;
+    }
     echo '{"success": true}';
 
 }

@@ -77,7 +77,11 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                     } else {
                         echo "<td>" . $row["storage_amount"] . "</td>";
                     }
-                    echo "<td>1 week</td>";
+                    if ($row["storage_amount"] == 0) {
+                        echo "<td>" .$row['production_duration'] .  " days</td>";
+                    } else {
+                        echo "<td>3 days</td>";
+                    }
                     echo "<td><a href='/sp/catalog/product?id=$sku'>Details</a></td>";
                     echo "</tr>";
                 }

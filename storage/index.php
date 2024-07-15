@@ -130,7 +130,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                         echo "<td class='cell-success'>" . $row['detail'] . "</td>";
                     } else if ($row["detail"] == "RESERVED") {
                         if ($row["quant_ordered"] == abs($row["amount"])) {
-                            echo "<td class='cell-success'>" . $row['detail'] . " (ready)</td>" . $row["quant_ordered"];
+                            echo "<td class='cell-success'>" . $row['detail'] . " (ready)</td>";
                         } else {
                             echo "<td class='cell-warning'>" . $row['detail'] . " (awaiting production)</td>";
                         }

@@ -53,7 +53,11 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
             echo "<p>" . $row['description'] . "</p>";
             echo "<p>Price: $" . $row['price'] . "</p>";
             echo "<p>Quantity Available: " . $row['storage_amount'] . "</p>";
-            echo "<p>Est. Delivery: 1 week</p>";
+            if ($row["storage_amount"] == 0) {
+                echo "<p>" .$row['production_duration'] .  " days</p>";
+            } else {
+                echo "<p>3 days</p>";
+            }
             echo "<img src='https://placehold.co/500x300' alt='Product Image'>";
             ?>
         </div>

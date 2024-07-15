@@ -19,7 +19,8 @@ table td {
 }
 
 .table-container {
-    height: 600px;
+    /* height: 600px; */
+    max-height: 600px;
     overflow-y: auto;
     width: 100%;
     display: flex;

@@ -16,7 +16,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
     <div class="forms-container">
         <div class="form-container">
             <h2>Neuen Servicepartner hinzufügen</h2>
-            <form action="/management/add_servicepartner.php" method="post">
+            <form action="/management/add/add_servicepartner.php" method="post">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required><br><br>
                 <label for="tax_number">Steuernummer:</label>
@@ -44,7 +44,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
 
         <div class="form-container">
             <h2>Neuen Kunden hinzufügen</h2>
-            <form action="/management/add_customer.php" method="post">
+            <form action="/management/add/add_customer.php" method="post">
                 <label for="name">Name:</label>
                 <input type="text" id="name" name="name" required><br><br>
                 <label for="street">Straße:</label>

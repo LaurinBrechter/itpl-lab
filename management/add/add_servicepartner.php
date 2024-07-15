@@ -34,7 +34,7 @@ $stmt->bind_param("ssiii", $name, $tax_number, $address_id, $isInternal, $user_i
 $stmt->execute();
 
 if ($stmt->affected_rows > 0) {
-    echo "Neuer Servicepartner erfolgreich hinzugefügt.";
+    echo "Neuer Servicepartner erfolgreich hinzugefügt. <a href='/management/overview'>Zurück zur Übersicht</a>";
 } else {
     echo "Fehler beim Hinzufügen des Servicepartners: " . $conn->error;
 }

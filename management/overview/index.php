@@ -40,7 +40,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                                         <td>" . $row["street"] . " " . $row["house_number"] . ", " . $row["city"] . "</td>
                                         <td>" . $row["telephone_number"] . "</td>
                                         <td>" . ($row["isVip"] ? 'Ja' : 'Nein') . "</td>
-                                        <td><a href='edit_customer.php?id=" . $row["customer_id"] . "'>Bearbeiten</a> | <a href='edit_customer.php?id=" . $row["customer_id"] . "&delete=true' onclick=\"return confirm('Sind Sie sicher, dass Sie diesen Kunden löschen möchten?');\">Löschen</a></td>
+                                        <td><a href='/management/overview/edit_customer.php?id=" . $row["customer_id"] . "'>Bearbeiten</a> | <a href='/management/overview/edit_customer.php?id=" . $row["customer_id"] . "&delete=true' onclick=\"return confirm('Sind Sie sicher, dass Sie diesen Kunden löschen möchten?');\">Löschen</a></td>
                                       </tr>";
                             }
                         } else {
@@ -80,7 +80,7 @@ include $_SERVER['DOCUMENT_ROOT'] . '/server/document_head.php';
                                         <td>" . $row["tax_number"] . "</td>
                                         <td>" . $row["street"] . " " . $row["house_number"] . ", " . $row["city"] . "</td>
                                         <td>" . ($row["isInternal"] ? 'Ja' : 'Nein') . "</td>
-                                        <td><a href='edit_servicepartner.php?id=" . $row["sp_id"] . "'>Bearbeiten</a> | <a href='edit_servicepartner.php?id=" . $row["sp_id"] . "&delete=true' onclick=\"return confirm('Sind Sie sicher, dass Sie diesen Servicepartner löschen möchten?');\">Löschen</a></td>
+                                        <td><a href='/management/overview/edit_servicepartner.php?id=" . $row["sp_id"] . "'>Bearbeiten</a> | <a href='/management/overview/edit_servicepartner.php?id=" . $row["sp_id"] . "&delete=true' onclick=\"return confirm('Sind Sie sicher, dass Sie diesen Servicepartner löschen möchten?');\">Löschen</a></td>
                                       </tr>";
                             }
                         } else {
